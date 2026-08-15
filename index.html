@@ -3,269 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Platform Prototype</title>
+    <title>Daman Game UI Clone</title>
     <style>
+        /* General Styles */
         :root {
-            --primary: #2563eb;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
+            --primary-red: #ff4d4d;
+            --header-gradient: linear-gradient(90deg, #ff4d4d 0%, #ff8080 100%);
+            --bg-main: #f4f6f9;
+            --card-white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --green-btn: #00c853;
+            --violet-btn: #d500f9;
+            --red-btn: #ff3d00;
         }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 400px;
-            margin: 20px auto;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        h2, h3 { text-align: center; color: #38bdf8; }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background: #334155;
-            border: 1px solid #475569;
-            color: white;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-        button:hover { opacity: 0.9; }
-        .hidden { display: none !important; }
-        .wallet-box {
-            background: #0284c7;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-success { background: var(--success); }
-        .btn-danger { background: var(--danger); }
-        .nav-link {
-            text-align: center;
-            margin-top: 15px;
-            color: #94a3b8;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .nav-link span { color: #38bdf8; text-decoration: underline; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-main); margin: 0; padding: 0; color: var(--text-dark); padding-bottom: 80px;}
+        .container { max-width: 400px; margin: 0 auto; }
+        ul, li { list-style: none; margin: 0; padding: 0; }
+
+        /* Header */
+        .header { background: var(--header-gradient); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header-left .back-arrow { font-size: 20px; margin-right: 10px; }
+        .header-title { font-size: 18px; font-weight: bold; display: flex; align-items: center; }
+        .header-title img { height: 20px; margin-right: 5px; }
+        .header-right { display: flex; gap: 15px; font-size: 18px; }
+
+        /* Balance Section */
+        .balance-section { background: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .balance-title { color: var(--text-light); font-size: 14px; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; }
+        .balance-amount { font-size: 32px; font-weight: bold; color: var(--text-dark); margin-bottom: 15px; }
+        .balance-amount span { font-size: 20px; position: relative; top: -2px; }
+        .balance-refresh { color: var(--text-light); margin-left: 5px; font-size: 14px; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn { padding: 12px 40px; border-radius: 25px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-withdraw { background-color: #f0f0f0; color: var(--text-dark); }
+        .btn-deposit { background-color: var(--green-btn); color: white; }
+
+        /* Announcement */
+        .announcement { background: white; margin: 10px; padding: 10px; border-radius: 8px; display: flex; align-items: center; font-size: 13px; color: var(--text-dark); box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .announcement i { color: var(--primary-red); margin-right: 10px; }
+        .announcement span { flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .btn-detail { background: #fff5f5; color: var(--primary-red); border: 1px solid #ffcccc; padding: 3px 8px; border-radius: 15px; font-size: 10px; font-weight: bold; cursor: pointer;}
+
+        /* Game Tabs */
+        .game-tabs { background: white; margin: 10px; border-radius: 8px; padding: 5px; display: flex; justify-content: space-around; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .tab-item { text-align: center; padding: 10px; color: var(--text-light); width: 25%; position: relative; }
+        .tab-item.active { color: var(--primary-red); font-weight: bold; }
+        .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 3px; background: var(--primary-red); border-radius: 3px 3px 0 0; }
+        .tab-item i { font-size: 22px; margin-bottom: 5px; display: block; }
+        .tab-item span { font-size: 12px; }
+
+        /* Game Control Section */
+        .game-controls { background: white; margin: 10px; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center;}
+        .how-to-play { background: #f0f0f0; color: var(--text-dark); padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center;}
+        .how-to-play img { height: 14px; margin-right: 5px;}
+        .timer-box { text-align: right; }
+        .timer-title { font-size: 12px; color: var(--text-light); margin-bottom: 2px; }
+        .timer-countdown { font-size: 24px; font-weight: bold; color: var(--primary-red); font-family: monospace; }
+        .timer-period { font-size: 11px; color: var(--text-light); }
+
+        /* Result History Small */
+        .result-history-small { background: white; margin: 10px; padding: 5px 15px; border-radius: 8px; display: flex; justify-content: flex-start; gap: 10px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .ball-small { width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 10px; }
+        .ball-green { background: var(--green-btn); }
+        .ball-red { background: var(--red-btn); }
+
+        /* Color Bet Buttons */
+        .bet-colors { background: white; margin: 10px; border-radius: 8px; padding: 15px; display: flex; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .bet-btn { flex: 1; padding: 15px; border-radius: 6px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; text-align: center;}
+        .bet-green { background-color: var(--green-btn); }
+        .bet-violet { background-color: var(--violet-btn); }
+        .bet-red { background-color: var(--red-btn); }
+
+        /* Number Grid */
+        .number-grid { background: white; margin: 10px; border-radius: 8px; padding: 15px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+        .num-btn { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 2px solid #e0e0e0; color: var(--text-dark); font-size: 16px; font-weight: bold; cursor: pointer; justify-self: center; position: relative; display: flex; justify-content: center; align-items: center;}
+        /* Specific colors for numbers mimicking original */
+        .num-0 { border-color: var(--violet-btn); color: var(--violet-btn); }
+        .num-1 { border-color: var(--green-btn); color: var(--green-btn); }
+        .num-2 { border-color: var(--red-btn); color: var(--red-btn); }
+        .num-3 { border-color: var(--green-btn); color: var(--green-btn); }
+        .num-4 { border-color: var(--red-btn); color: var(--red-btn); }
+        .num-5 { border-color: var(--violet-btn); color: var(--violet-btn); }
+        .num-6 { border-color: var(--red-btn); color: var(--red-btn); }
+        .num-7 { border-color: var(--green-btn); color: var(--green-btn); }
+        .num-8 { border-color: var(--red-btn); color: var(--red-btn); }
+        .num-9 { border-color: var(--green-btn); color: var(--green-btn); }
+
+        /* Multiplier */
+        .multiplier-section { background: white; margin: 10px; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03);}
+        .btn-random { background-color: var(--primary-red); color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;}
+        .multipliers { display: flex; gap: 5px;}
+        .multi-btn { background: #f0f0f0; border: 1px solid #e0e0e0; color: var(--text-dark); padding: 8px 12px; border-radius: 5px; font-size: 12px; cursor: pointer;}
+        .multi-btn.active { background: var(--primary-red); color: white; border-color: var(--primary-red);}
+
+        /* FontAwesome for Icons */
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- AUTH SECTION -->
-    <div class="container" id="auth-section">
-        <!-- Login Form -->
-        <div id="login-form">
-            <h2>Login</h2>
-            <input type="text" id="login-phone" placeholder="Mobile Number">
-            <input type="password" id="login-pass" placeholder="Password">
-            <button onclick="handleLogin()">Login</button>
-            <div class="nav-link" onclick="toggleAuth(false)">Don't have an account? <span>Register</span></div>
-        </div>
-
-        <!-- Register Form -->
-        <div id="register-form" class="hidden">
-            <h2>Register</h2>
-            <input type="text" id="reg-phone" placeholder="Mobile Number">
-            <input type="password" id="reg-pass" placeholder="Password">
-            <button onclick="handleRegister()">Register</button>
-            <div class="nav-link" onclick="toggleAuth(true)">Already have an account? <span>Login</span></div>
-        </div>
-    </div>
-
-    <!-- DASHBOARD SECTION -->
-    <div class="container hidden" id="dashboard-section">
-        <h2>Dashboard</h2>
-        <div class="wallet-box">
-            <h3>Balance: ₹<span id="wallet-balance">0</span></h3>
-        </div>
-
-        <div class="btn-group">
-            <button class="btn-success" onclick="showModal('deposit-modal')">Deposit</button>
-            <button class="btn-danger" onclick="showModal('withdraw-modal')">Withdraw</button>
-        </div>
-
-        <hr style="border-color: #475569; margin: 20px 0;">
-
-        <!-- Simple Game Area -->
-        <h3>Color Prediction Game</h3>
-        <p style="text-align: center; font-size: 14px;">Pick a color & guess win!</p>
-        <div class="btn-group">
-            <button class="btn-success" onclick="playGame('Green')">Green</button>
-            <button class="btn-danger" onclick="playGame('Red')">Red</button>
-        </div>
-        <p id="game-result" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
-
-        <button onclick="handleLogout()" style="background: #475569; margin-top: 30px;">Logout</button>
-    </div>
-
-    <!-- DEPOSIT MODAL -->
-    <div class="container hidden" id="deposit-modal">
-        <h3>Deposit Money (UPI)</h3>
-        <input type="number" id="dep-amount" placeholder="Enter Amount">
-        <input type="text" id="dep-upi" placeholder="Enter UPI ID (e.g. user@okhdfc)">
-        <button class="btn-success" onclick="processDeposit()">Submit Deposit</button>
-        <button onclick="hideModal('deposit-modal')" style="background: #475569;">Back</button>
-    </div>
-
-    <!-- WITHDRAW MODAL -->
-    <div class="container hidden" id="withdraw-modal">
-        <h3>Withdraw Money (Bank Account)</h3>
-        <input type="number" id="wd-amount" placeholder="Enter Amount">
-        <input type="text" id="wd-acc" placeholder="Bank Account Number">
-        <input type="text" id="wd-ifsc" placeholder="IFSC Code">
-        <button class="btn-danger" onclick="processWithdraw()">Submit Withdrawal</button>
-        <button onclick="hideModal('withdraw-modal')" style="background: #475569;">Back</button>
-    </div>
-
-    <script>
-        // Check if user is logged in
-        let currentUser = localStorage.getItem('currentUser');
-        if (currentUser) {
-            showDashboard();
-        }
-
-        function toggleAuth(isLogin) {
-            document.getElementById('login-form').classList.toggle('hidden', !isLogin);
-            document.getElementById('register-form').classList.toggle('hidden', isLogin);
-        }
-
-        function handleRegister() {
-            let phone = document.getElementById('reg-phone').value;
-            let pass = document.getElementById('reg-pass').value;
-            if(!phone || !pass) { alert('Fill all fields'); return; }
-            
-            localStorage.setItem('user_' + phone, JSON.stringify({ pass: pass, balance: 100 })); // Free 100 signup bonus
-            localStorage.setItem('currentUser', phone);
-            alert('Registration Successful!');
-            showDashboard();
-        }
-
-        function handleLogin() {
-            let phone = document.getElementById('login-phone').value;
-            let pass = document.getElementById('login-pass').value;
-            let userData = localStorage.getItem('user_' + phone);
-            
-            if(userData) {
-                let user = JSON.parse(userData);
-                if(user.pass === pass) {
-                    localStorage.setItem('currentUser', phone);
-                    showDashboard();
-                    return;
-                }
-            }
-            alert('Invalid Phone or Password');
-        }
-
-        function showDashboard() {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('dashboard-section').classList.remove('hidden');
-            updateBalanceDisplay();
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('currentUser');
-            document.getElementById('dashboard-section').classList.add('hidden');
-            document.getElementById('auth-section').classList.remove('hidden');
-        }
-
-        function getActiveUser() {
-            let phone = localStorage.getItem('currentUser');
-            let data = JSON.parse(localStorage.getItem('user_' + phone));
-            return { phone, data };
-        }
-
-        function saveActiveUser(data) {
-            let phone = localStorage.getItem('currentUser');
-            localStorage.setItem('user_' + phone, JSON.stringify(data));
-            updateBalanceDisplay();
-        }
-
-        function updateBalanceDisplay() {
-            let { data } = getActiveUser();
-            if(data) {
-                document.getElementById('wallet-balance').innerText = data.balance;
-            }
-        }
-
-        function showModal(modalId) {
-            document.getElementById('dashboard-section').classList.add('hidden');
-            document.getElementById(modalId).classList.remove('hidden');
-        }
-
-        function hideModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-            document.getElementById('dashboard-section').classList.remove('hidden');
-        }
-
-        function processDeposit() {
-            let amt = Number(document.getElementById('dep-amount').value);
-            let upi = document.getElementById('dep-upi').value;
-            if(!amt || !upi) { alert('Enter valid amount and UPI'); return; }
-            
-            let { data } = getActiveUser();
-            data.balance += amt;
-            saveActiveUser(data);
-            alert('Deposit Successful (Simulated)!');
-            hideModal('deposit-modal');
-        }
-
-        function processWithdraw() {
-            let amt = Number(document.getElementById('wd-amount').value);
-            let acc = document.getElementById('wd-acc').value;
-            let ifsc = document.getElementById('wd-ifsc').value;
-            if(!amt || !acc || !ifsc) { alert('Fill all bank details'); return; }
-            
-            let { data } = getActiveUser();
-            if(data.balance < amt) { alert('Insufficient Balance!'); return; }
-            
-            data.balance -= amt;
-            saveActiveUser(data);
-            alert('Withdrawal Request Submitted (Simulated)!');
-            hideModal('withdraw-modal');
-        }
-
-        function playGame(choice) {
-            let { data } = getActiveUser();
-            let betAmount = 10; // Fixed 10 Rs bet for testing
-            if(data.balance < betAmount) { alert('Low balance! Please deposit.'); return; }
-
-            let colors = ['Green', 'Red'];
-            let winningColor = colors[Math.floor(Math.random() * colors.length)];
-            
-            if(choice === winningColor) {
-                data.balance += betAmount;
-                document.getElementById('game-result').style.color = '#16a34a';
-                document.getElementById('game-result').innerText = `You Won! Winning color was ${winningColor}`;
-            } else {
-                data.balance -= betAmount;
-                document.getElementById('game-result').style.color = '#dc2626';
-                document.getElementById('game-result').innerText = `You Lost! Winning color was ${winningColor}`;
-            }
-            saveActiveUser(data);
-        }
-    </script>
-</body>
-              </html>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <i class="fas fa-chevron-left back-arrow"></i>
+            </div>
+            <div class="header-title">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmCAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAF6SURBVHgB7di9bcMwGMXxG3oFj2CpYgXbIStYjKCoGFG0CoygqBBRtAqyYgXbIStYgqKoGFG0CnKCAVvRInjpTjR8xUe+A+EHDsk56Qv44D0X8sEH7x/oH3zw/oH+wwfvH+gfPHj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0Dz54/0D/4IP3D/QPPnj/QP/gg/cP9A8+eP9A/+CD9w/0￼Enter
