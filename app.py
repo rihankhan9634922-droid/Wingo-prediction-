@@ -1,168 +1,133 @@
-from flask import Flask, jsonify
-import random
-import time
-from datetime import datetime, timezone, timedelta
+from flask import Flask, render_template_string
+from datetime import datetime
 
 app = Flask(__name__)
 
-# 10 AI Bots with English names, DP (avatars), and initial scores
-BOTS_LIST = [
-    {"id": 1, "name": "Sophia", "gender": "girl", "dp": "https://i.imgur.com/8Km9tLL.png", "score": 75},
-    {"id": 2, "name": "Alexander", "gender": "boy", "dp": "https://i.imgur.com/2df4k9T.png", "score": 80},
-    {"id": 3, "name": "Emma", "gender": "girl", "dp": "https://i.imgur.com/5g2x1LJ.png", "score": 70},
-    {"id": 4, "name": "William", "gender": "boy", "dp": "https://i.imgur.com/9h7K4lQ.png", "score": 85},
-    {"id": 5, "name": "Olivia", "gender": "girl", "dp": "https://i.imgur.com/4X1m8Zv.png", "score": 65},
-    {"id": 6, "name": "James", "gender": "boy", "dp": "https://i.imgur.com/6y2p9Kt.png", "score": 90},
-    {"id": 7, "name": "Ava", "gender": "girl", "dp": "https://i.imgur.com/3n8L2wR.png", "score": 72},
-    {"id": 8, "name": "Benjamin", "gender": "boy", "dp": "https://i.imgur.com/7k4Q1mX.png", "score": 78},
-    {"id": 9, "name": "Mia", "gender": "girl", "dp": "https://i.imgur.com/1p9K5vN.png", "score": 82},
-    {"id": 10, "name": "Lucas", "gender": "boy", "dp": "https://i.imgur.com/8w3N6hL.png", "score": 88}
-]
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DARK SPECIAL - Live Server</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f6f9; color: #333333; padding: 15px; max-width: 450px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 20px 0; }
+        .logo { font-size: 18px; font-weight: 800; letter-spacing: 2px; color: #007bff; }
+        .top-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 12px; font-weight: bold; color: #666666; letter-spacing: 1px; }
+        .live-tag { background: #e1f5fe; color: #0288d1; padding: 4px 10px; border-radius: 12px; font-size: 10px; border: 1px solid #b3e5fc; }
+        .prediction-card { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 20px; padding: 25px 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .pred-title { color: #888888; font-size: 11px; letter-spacing: 2px; margin-bottom: 10px; }
+        .main-prediction { font-size: 52px; font-weight: 900; color: #8e44ad; letter-spacing: 3px; margin: 5px 0; }
+        .golden-title { color: #d35400; font-size: 10px; letter-spacing: 2px; margin-top: 15px; }
+        .golden-numbers { font-size: 38px; font-weight: bold; color: #e67e22; margin: 5px 0; }
+        .timer-section { margin: 20px 0 15px 0; }
+        .timer-header { display: flex; justify-content: space-between; font-size: 11px; color: #666666; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px; }
+        .timer-clock { color: #007bff; font-size: 14px; font-family: monospace; font-weight: bold; }
+        .progress-bar { width: 100%; height: 4px; background: #e0e0e0; border-radius: 2px; overflow: hidden; }
+        .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #8e44ad, #007bff); transition: width 1s linear; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 12px 5px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .stat-label { font-size: 9px; color: #888888; letter-spacing: 1px; margin-bottom: 5px; }
+        .stat-value { font-size: 20px; font-weight: bold; }
+        .results-section { margin-bottom: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+        .res-card { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 10px 0; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .res-num { font-size: 18px; font-weight: bold; color: #e67e22; }
+        .res-type { font-size: 9px; color: #8e44ad; font-weight: bold; margin-top: 3px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div style="font-size: 20px; cursor: pointer; color: #333;">☰</div>
+        <div class="logo">DARK SPECIAL</div>
+        <div style="font-size: 20px; color: #f39c12; cursor: pointer;">🔔</div>
+    </div>
+
+    <div class="top-info">
+        <div>PERIOD: <span id="period-text" style="color: #111;">--</span></div>
+        <div class="live-tag">● LIVE SERVER</div>
+    </div>
+
+    <div class="prediction-card">
+        <div class="pred-title">NEXT PREDICTION</div>
+        <div class="main-prediction" id="pred-text">SMALL</div>
+        <div class="golden-title">★ GOLDEN NUMBERS</div>
+        <div class="golden-numbers" id="golden-text">7 5</div>
+    </div>
+
+    <div class="timer-section">
+        <div class="timer-header">
+            <div>NEXT RESULT IN</div>
+            <div class="timer-clock" id="timer-clock">00:30</div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">ACCURACY</div>
+            <div class="stat-value" style="color: #27ae60;">100.0%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">WIN</div>
+            <div class="stat-value" style="color: #27ae60;">7</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">LOSS</div>
+            <div class="stat-value" style="color: #c0392b;">0</div>
+        </div>
+    </div>
+
+    <div class="results-section">
+        <div style="font-size: 11px; font-weight: bold; color: #666666; letter-spacing: 1px;">RECENT RESULTS</div>
+        <div class="results-grid">
+            <div class="res-card"><div class="res-num">2</div><div class="res-type">SMALL</div></div>
+            <div class="res-card"><div class="res-num">7</div><div class="res-type" style="color: #007bff;">BIG</div></div>
+            <div class="res-card"><div class="res-num">6</div><div class="res-type" style="color: #007bff;">BIG</div></div>
+            <div class="res-card"><div class="res-num">9</div><div class="res-type" style="color: #007bff;">BIG</div></div>
+            <div class="res-card"><div class="res-num">8</div><div class="res-type" style="color: #007bff;">BIG</div></div>
+        </div>
+    </div>
+
+    <script>
+        function updateTimer() {
+            const now = new Date();
+            const seconds = now.getSeconds();
+            
+            let remSeconds = 30 - (seconds % 30);
+            if (remSeconds === 30) remSeconds = 0;
+
+            const formattedSec = remSeconds < 10 ? '0' + remSeconds : remSeconds;
+            document.getElementById('timer-clock').innerText = `00:${formattedSec}`;
+
+            const progressPercent = (remSeconds / 30) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            
+            const totalMinutesToday = now.getHours() * 60 + now.getMinutes();
+            const periodIntervals = totalMinutesToday * 2 + (seconds >= 30 ? 2 : 1);
+            const periodNumberStr = `${year}${month}${day}1000${10000 + periodIntervals}`;
+            
+            document.getElementById('period-text').innerText = periodNumberStr;
+        }
+
+        setInterval(updateTimer, 100);
+        updateTimer();
+    </script>
+</body>
+</html>
+"""
 
 @app.route('/')
-def index():
-    return '''
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Perfect Fit AI Predictor</title>
-        <style>
-            body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-            .header { background: #1f1f1f; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
-            .mode-select { background: #2c2c2c; color: white; border: 1px solid #444; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
-            .refresh-btn { background-color: #0084ff; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-            
-            .game-board { background: #181818; padding: 15px; text-align: center; border-bottom: 1px solid #333; }
-            .falling-box { font-size: 20px; font-weight: bold; animation: fall 0.5s ease-in-out; margin: 5px 0; }
-            @keyframes fall { 0% { transform: translateY(-20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-            
-            .chat-container { padding: 10px; max-width: 600px; margin: auto; }
-            .chat-card { background: #202c33; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-            .dp { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 1px solid #555; }
-            .chat-info { flex-grow: 1; }
-            .bot-name { font-weight: bold; font-size: 15px; color: #e9edef; }
-            .score { font-size: 12px; color: #8696a0; margin-top: 2px; }
-            .prediction-badge { padding: 5px 12px; border-radius: 6px; font-weight: bold; font-size: 13px; text-align: center; min-width: 60px; }
-            .big { background:. #fa5858; color: white; background-color: #ff4757; }
-            .small { background-color: #1e90ff; color: white; }
-            .timer-box { font-size: 14px; color: #00ffcc; font-weight: bold; }
-        </style>
-    </head>
-    <body>
+def home():
+    return render_template_string(HTML_TEMPLATE)
 
-        <div class="header">
-            <div>
-                <select id="gameMode" class="mode-select" onchange="updateMode()">
-                    <option value="30s">30 Seconds</option>
-                    <option value="1min">1 Minute</option>
-                </select>
-            </div>
-            <div id="timer" class="timer-box">00:30</div>
-            <button class="refresh-btn" onclick="fetchData()">Refresh</button>
-        </div>
-
-        <div class="game-board">
-            <div style="font-size: 12px; color: #8696a0;" id="period-text">PERIOD: Loading...</div>
-            <div id="fallingResult" class="falling-box" style="color: #00ffcc;">WAITING...</div>
-        </div>
-
-        <div class="chat-container" id="bots-container">
-            <!-- Bots will load here -->
-        </div>
-
-        <script>
-            let currentMode = '30s';
-
-            function updateMode() {
-                currentMode = document.getElementById('gameMode').value;
-                fetchData();
-            }
-
-            function fetchData() {
-                fetch('/api/data?mode=' + currentMode)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('period-text').innerText = "PERIOD: " + data.period;
-                        
-                        let resDiv = document.getElementById('fallingResult');
-                        resDiv.innerText = data.last_result;
-                        resDiv.style.animation = 'none';
-                        setTimeout(() => resDiv.style.animation = 'fall 0.5s ease-in-out', 10);
-
-                        let container = document.getElementById('bots-container');
-                        container.innerHTML = '';
-                        
-                        data.bots.forEach(bot => {
-                            let predClass = bot.next === 'BIG' ? 'big' : 'small';
-                            let card = `
-                                <div class="chat-card">
-                                    <img src="${bot.dp}" class="dp" alt="DP">
-                                    <div class="chat-info">
-                                        <div class="bot-name">${bot.name}</div>
-                                        <div class="score">Accuracy / Score: ${bot.score}%</div>
-                                    </div>
-                                    <div class="prediction-badge ${predClass}">${bot.next}</div>
-                                </div>
-                            `;
-                            container.innerHTML += card;
-                        });
-                    });
-            }
-
-            // Live Timer Synchronization
-            function startTimer() {
-                setInterval(() => {
-                    let now = new Date();
-                    let sec = now.getSeconds();
-                    let timeLeft = currentMode === '30s' ? (sec < 30 ? 30 - sec : 60 - sec) : (60 - sec);
-                    if (timeLeft === 60) timeLeft = 0;
-                    document.getElementById('timer').innerText = "00:" + (timeLeft < 10 ? "0" : "") + timeLeft;
-                    
-                    if (timeLeft === 5) {
-                        fetchData(); // Auto refresh near period change
-                    }
-                }, 1000);
-            }
-
-            fetchData();
-            startTimer();
-        </script>
-    </body>
-    </html>
-    '''
-
-@app.route('/api/data')
-def get_data():
-    from flask import request
-    mode = request.args.get('mode', '30s')
-    
-    # Accurate live period calculation based on IST timezone
-    ist_time = datetime.now(timezone(timedelta(hours=5, minutes=30)))
-    total_seconds = ist_time.hour * 3600 + ist_time.minute * 60 + ist_time.second
-    
-    if mode == '30s':
-        period_index = total_seconds // 30
-    else:
-        period_index = total_seconds // 60
-        
-    date_str = ist_time.strftime("%Y%m%d")
-    period_number = f"{date_str}1000{1000 + period_index}"
-
-    # Simulating dynamic score adjustments (+10% / -10% simulation logic)
-    for bot in BOTS_LIST:
-        change = random.choice([2, -2, 5, -5])
-        bot['score'] = max(40, min(98, bot['score'] + change))
-        bot['next'] = random.choice(["BIG", "SMALL"])
-
-    last_result = f"{random.choice(['BIG', 'SMALL'])} ({random.randint(0, 9)})"
-
-    return jsonify({
-        "period": period_number,
-        "last_result": last_result,
-        "bots": BOTS_LIST
-    })
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8090)
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
