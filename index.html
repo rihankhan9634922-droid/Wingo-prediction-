@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Platform Prototype</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h2, h3 { text-align: center; color: #38bdf8; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #334155;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        button:hover { opacity: 0.9; }
+        .hidden { display: none !important; }
+        .wallet-box {
+            background: #0284c7;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+        .nav-link {
+            text-align: center;
+            margin-top: 15px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .nav-link span { color: #38bdf8; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <!-- AUTH SECTION -->
+    <div class="container" id="auth-section">
+        <!-- Login Form -->
+        <div id="login-form">
+            <h2>Login</h2>
+            <input type="text" id="login-phone" placeholder="Mobile Number">
+            <input type="password" id="login-pass" placeholder="Password">
+            <button onclick="handleLogin()">Login</button>
+            <div class="nav-link" onclick="toggleAuth(false)">Don't have an account? <span>Register</span></div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="hidden">
+            <h2>Register</h2>
+            <input type="text" id="reg-phone" placeholder="Mobile Number">
+            <input type="password" id="reg-pass" placeholder="Password">
+            <button onclick="handleRegister()">Register</button>
+            <div class="nav-link" onclick="toggleAuth(true)">Already have an account? <span>Login</span></div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div class="container hidden" id="dashboard-section">
+        <h2>Dashboard</h2>
+        <div class="wallet-box">
+            <h3>Balance: ₹<span id="wallet-balance">0</span></h3>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-success" onclick="showModal('deposit-modal')">Deposit</button>
+            <button class="btn-danger" onclick="showModal('withdraw-modal')">Withdraw</button>
+        </div>
+
+        <hr style="border-color: #475569; margin: 20px 0;">
+
+        <!-- Simple Game Area -->
+        <h3>Color Prediction Game</h3>
+        <p style="text-align: center; font-size: 14px;">Pick a color & guess win!</p>
+        <div class="btn-group">
+            <button class="btn-success" onclick="playGame('Green')">Green</button>
+            <button class="btn-danger" onclick="playGame('Red')">Red</button>
+        </div>
+        <p id="game-result" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
+
+        <button onclick="handleLogout()" style="background: #475569; margin-top: 30px;">Logout</button>
+    </div>
+
+    <!-- DEPOSIT MODAL -->
+    <div class="container hidden" id="deposit-modal">
+        <h3>Deposit Money (UPI)</h3>
+        <input type="number" id="dep-amount" placeholder="Enter Amount">
+        <input type="text" id="dep-upi" placeholder="Enter UPI ID (e.g. user@okhdfc)">
+        <button class="btn-success" onclick="processDeposit()">Submit Deposit</button>
+        <button onclick="hideModal('deposit-modal')" style="background: #475569;">Back</button>
+    </div>
+
+    <!-- WITHDRAW MODAL -->
+    <div class="container hidden" id="withdraw-modal">
+        <h3>Withdraw Money (Bank Account)</h3>
+        <input type="number" id="wd-amount" placeholder="Enter Amount">
+        <input type="text" id="wd-acc" placeholder="Bank Account Number">
+        <input type="text" id="wd-ifsc" placeholder="IFSC Code">
+        <button class="btn-danger" onclick="processWithdraw()">Submit Withdrawal</button>
+        <button onclick="hideModal('withdraw-modal')" style="background: #475569;">Back</button>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        let currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            showDashboard();
+        }
+
+        function toggleAuth(isLogin) {
+            document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+            document.getElementById('register-form').classList.toggle('hidden', isLogin);
+        }
+
+        function handleRegister() {
+            let phone = document.getElementById('reg-phone').value;
+            let pass = document.getElementById('reg-pass').value;
+            if(!phone || !pass) { alert('Fill all fields'); return; }
+            
+            localStorage.setItem('user_' + phone, JSON.stringify({ pass: pass, balance: 100 })); // Free 100 signup bonus
+            localStorage.setItem('currentUser', phone);
+            alert('Registration Successful!');
+            showDashboard();
+        }
+
+        function handleLogin() {
+            let phone = document.getElementById('login-phone').value;
+            let pass = document.getElementById('login-pass').value;
+            let userData = localStorage.getItem('user_' + phone);
+            
+            if(userData) {
+                let user = JSON.parse(userData);
+                if(user.pass === pass) {
+                    localStorage.setItem('currentUser', phone);
+                    showDashboard();
+                    return;
+                }
+            }
+            alert('Invalid Phone or Password');
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            updateBalanceDisplay();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.remove('hidden');
+        }
+
+        function getActiveUser() {
+            let phone = localStorage.getItem('currentUser');
+            let data = JSON.parse(localStorage.getItem('user_' + phone));
+            return { phone, data };
+        }
+
+        function saveActiveUser(data) {
+            let phone = localStorage.getItem('currentUser');
+            localStorage.setItem('user_' + phone, JSON.stringify(data));
+            updateBalanceDisplay();
+        }
+
+        function updateBalanceDisplay() {
+            let { data } = getActiveUser();
+            if(data) {
+                document.getElementById('wallet-balance').innerText = data.balance;
+            }
+        }
+
+        function showModal(modalId) {
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+        }
+
+        function processDeposit() {
+            let amt = Number(document.getElementById('dep-amount').value);
+            let upi = document.getElementById('dep-upi').value;
+            if(!amt || !upi) { alert('Enter valid amount and UPI'); return; }
+            
+            let { data } = getActiveUser();
+            data.balance += amt;
+            saveActiveUser(data);
+            alert('Deposit Successful (Simulated)!');
+            hideModal('deposit-modal');
+        }
+
+        function processWithdraw() {
+            let amt = Number(document.getElementById('wd-amount').value);
+            let acc = document.getElementById('wd-acc').value;
+            let ifsc = document.getElementById('wd-ifsc').value;
+            if(!amt || !acc || !ifsc) { alert('Fill all bank details'); return; }
+            
+            let { data } = getActiveUser();
+            if(data.balance < amt) { alert('Insufficient Balance!'); return; }
+            
+            data.balance -= amt;
+            saveActiveUser(data);
+            alert('Withdrawal Request Submitted (Simulated)!');
+            hideModal('withdraw-modal');
+        }
+
+        function playGame(choice) {
+            let { data } = getActiveUser();
+            let betAmount = 10; // Fixed 10 Rs bet for testing
+            if(data.balance < betAmount) { alert('Low balance! Please deposit.'); return; }
+
+            let colors = ['Green', 'Red'];
+            let winningColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            if(choice === winningColor) {
+                data.balance += betAmount;
+                document.getElementById('game-result').style.color = '#16a34a';
+                document.getElementById('game-result').innerText = `You Won! Winning color was ${winningColor}`;
+            } else {
+                data.balance -= betAmount;
+                document.getElementById('game-result').style.color = '#dc2626';
+                document.getElementById('game-result').innerText = `You Lost! Winning color was ${winningColor}`;
+            }
+            saveActiveUser(data);
+        }
+    </script>
+</body>
+              </html>
