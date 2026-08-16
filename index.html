@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daman Prediction AI</title>
+  <title>Daman Prediction AI - Fixed Layout</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #080d1a; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
 
+    /* Top Bar */
     .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e293b; margin-bottom: 12px; }
     .logo { font-weight: bold; font-size: 16px; color: #ffb703; }
     .login-btn { background: #ff2a55; padding: 5px 12px; border-radius: 20px; color: #fff; font-weight: bold; font-size: 12px; }
 
+    /* Navigation Tabs */
     .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; background: #ffffff; padding: 6px; border-radius: 14px; }
     .tab { background: #f1f5f9; padding: 10px 2px; border-radius: 10px; text-align: center; font-size: 11px; color: #64748b; font-weight: 600; cursor: pointer; }
     .tab.active { background: #ff4d4d; color: #ffffff; box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3); }
     .tab.disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* Red Top Banner */
     .banner { background: #e63946; border-radius: 16px; padding: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .game-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
     .balls { display: flex; gap: 4px; }
@@ -27,9 +30,11 @@
     .t-box { background: #ffffff; color: #000; padding: 2px 5px; border-radius: 4px; }
     .period-id { font-size: 11px; margin-top: 6px; font-weight: 700; }
 
+    /* Card Wrapper */
     .card-box { background: #131b2e; border: 1px solid #1e293b; border-radius: 16px; padding: 12px; margin-bottom: 15px; }
     .section-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #ffb703; }
 
+    /* Bot List View */
     .bot-list { display: flex; flex-direction: column; gap: 8px; }
     .bot-card { background: #1a243a; border: 1px solid #26334d; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .bot-left { display: flex; align-items: center; gap: 10px; }
@@ -49,6 +54,7 @@
     .card-pred-big { background: #ff9f1c; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
     .card-pred-small { background: #2ec4b6; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
 
+    /* Dedicated Bot Screen View */
     #botDetailPage { display: none; }
     .back-btn { background: #2b374e; color: #ffb703; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
     
@@ -57,6 +63,7 @@
     .next-bet-period { font-size: 13px; font-weight: bold; margin-top: 4px; color: #ffb703; }
     .next-bet-badge { margin-top: 8px; font-size: 22px; font-weight: 900; padding: 6px 28px; border-radius: 8px; display: inline-block; }
 
+    /* Bets Table */
     .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
     .bets-table th { text-align: left; color: #64748b; padding: 6px 2px; }
     .bets-table td { padding: 8px 2px; border-top: 1px solid #1e293b; }
@@ -68,18 +75,21 @@
 </head>
 <body>
 
+  <!-- App Main Header -->
   <div class="top-bar">
     <div class="logo">👑 DAMAN PREDICTION</div>
     <div class="login-btn">Login</div>
   </div>
 
+  <!-- Game Mode Selection -->
   <div class="game-tabs">
     <div class="tab active" id="tab30s" onclick="switchGameMode('30s')"><span style="display:block;">⏱️</span>WinGo 30s</div>
     <div class="tab" id="tab1m" onclick="switchGameMode('1m')"><span style="display:block;">⏱️</span>WinGo 1m</div>
-    <div class="tab disabled"><span style="display:block;">🔒</span>WinGo 3m</div>
-    <div class="tab disabled"><span style="display:block;">🔒</span>WinGo 5m</div>
+    <div class="tab disabled" onclick="alert('3 Min Mode Disabled')"><span style="display:block;">🔒</span>WinGo 3m</div>
+    <div class="tab disabled" onclick="alert('5 Min Mode Disabled')"><span style="display:block;">🔒</span>WinGo 5m</div>
   </div>
 
+  <!-- Realtime Game Status Red Banner -->
   <div class="banner">
     <div>
       <div class="game-name" id="bannerGameTitle">WinGo 30sec</div>
@@ -94,11 +104,13 @@
     </div>
   </div>
 
+  <!-- VIEW 1: All Bots List View -->
   <div class="card-box" id="botListPage">
     <div class="section-title">🏆 Select Bot to Open Prediction Page</div>
     <div class="bot-list" id="botListContainer"></div>
   </div>
 
+  <!-- VIEW 2: Dedicated Bot View -->
   <div class="card-box" id="botDetailPage">
     <button class="back-btn" onclick="showListPage()">← Back to All Bots</button>
     
@@ -112,12 +124,14 @@
       </div>
     </div>
 
+    <!-- Active Bot Prediction Box -->
     <div class="next-bet-card">
       <div class="next-bet-title">NEXT PERIOD PREDICTION</div>
       <div class="next-bet-period" id="detailPeriodNum">Period: Loading...</div>
       <div id="detailPredBadge">--</div>
     </div>
 
+    <!-- Clean History Table (10 Bets Only) -->
     <div style="font-size:12px; font-weight:700;">Last 10 Bets History</div>
     <table class="bets-table">
       <thead>
@@ -132,64 +146,46 @@
     </table>
   </div>
 
-  <script>
-    var currentGameMode = "30s";
-    var activeBotId = null;
-    var activePeriods = { "30s": "", "1m": "" };
+<script>
+  let currentGameMode = '30s';
+  let activeBotId = null;
+  let activePeriods = { '30s': '', '1m': '' };
 
-    function createInitialBots() {
-      return [
-        { id: 1, name: "Sophia", avatar: "https://randomuser.me/api/portraits/women/44.jpg", history: [], nextPred: "BIG" },
-        { id: 2, name: "Daniel", avatar: "https://randomuser.me/api/portraits/men/32.jpg", history: [], nextPred: "SMALL" },
-        { id: 3, name: "Emma", avatar: "https://randomuser.me/api/portraits/women/68.jpg", history: [], nextPred: "BIG" },
-        { id: 4, name: "Ryan", avatar: "https://randomuser.me/api/portraits/men/46.jpg", history: [], nextPred: "SMALL" },
-        { id: 5, name: "Olivia", avatar: "https://randomuser.me/api/portraits/women/65.jpg", history: [], nextPred: "BIG" },
-        { id: 6, name: "Liam", avatar: "https://randomuser.me/api/portraits/men/22.jpg", history: [], nextPred: "SMALL" },
-        { id: 7, name: "Ava", avatar: "https://randomuser.me/api/portraits/women/26.jpg", history: [], nextPred: "BIG" },
-        { id: 8, name: "Noah", avatar: "https://randomuser.me/api/portraits/men/85.jpg", history: [], nextPred: "SMALL" },
-        { id: 9, name: "Mia", avatar: "https://randomuser.me/api/portraits/women/12.jpg", history: [], nextPred: "BIG" },
-        { id: 10, name: "James", avatar: "https://randomuser.me/api/portraits/men/11.jpg", history: [], nextPred: "SMALL" }
-      ];
-    }
-
-    var botData = { "30s": createInitialBots(), "1m": createInitialBots() };
-    var lastProcessedPeriod = { "30s": "", "1m": "" };
-
-    function getAccuracy(bot) {
-      if (bot.history.length === 0) return 100;
-      var wins = 0;
-      for (var i = 0; i < bot.history.length; i++) {
-        if (bot.history[i].status === "WIN") wins++;
-      }
-      return Math.round((wins / bot.history.length) * 100);
-    }
-
-    function calculateDamanPeriodInfo(mode) {
-      var now = new Date();
-      var year = now.getFullYear();
-      var month = String(now.getMonth() + 1);
-      if (month.length < 2) month = "0" + month;
-      var day = String(now.getDate());
-      if (day.length < 2) day = "0" + day;
+  function createInitialBots() {
+    return [
+      { id: 1, name: "Sophia", avatar: "https://randomuser.me/api/portraits/women/44.jpg", history: [], nextPred: "BIG" },
+      { id: 2, name: "Daniel", avatar: "https://randomuser.me/api/portraits/men/32.jpg", history: [], nextPred: "SMALL" },
+      { id: 3, name: "Emma", avatar: "https://randomuser.me/api/portraits/women/68.jpg", history: [], nextPred: "BIG" },
+      { id: 4, name: "Ryan", avatar: "https://randomuser.me/api/portraits/men/46.jpg", history: [], nextPred: "SMALL" },
+      { id: 5, name: "Olivia", avatar: "https://randomuser.me/api/portraits/women/65.jpg", history: [], nextPred: "BIG" },
+      { id: 6, name: "Liam", avatar: "https://randomuser.me/api/portraits/men/22.jpg", history: [], nextPred: "SMALL" },
+      { id: 7, name: "Ava", avatar: "https://randomuser.me/api/portraits/women/26.jpg", history: [], nextPred: "BIG" },
+      { id: 8, name: "Noah", avatar: "https://randomuser.me/api/portraits/men/85.jpg", history: [], nextPred: "SMALL" },
+      { id: 9, name: "Mia", avatar: "https://randomuser.me/api/portraits/women/12.jpg", history: [], nextPred: "BIG" },
+      { id: 10, name: "James", avatar: "https://randomuser.me/api/portraits/men/11.jpg", history: [], nextPred: "SMALL" }
+    ];
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daman Prediction AI</title>
+  <title>Daman Prediction AI - Fixed Layout</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #080d1a; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
 
+    /* Top Bar */
     .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e293b; margin-bottom: 12px; }
     .logo { font-weight: bold; font-size: 16px; color: #ffb703; }
     .login-btn { background: #ff2a55; padding: 5px 12px; border-radius: 20px; color: #fff; font-weight: bold; font-size: 12px; }
 
+    /* Navigation Tabs */
     .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; background: #ffffff; padding: 6px; border-radius: 14px; }
     .tab { background: #f1f5f9; padding: 10px 2px; border-radius: 10px; text-align: center; font-size: 11px; color: #64748b; font-weight: 600; cursor: pointer; }
     .tab.active { background: #ff4d4d; color: #ffffff; box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3); }
     .tab.disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* Red Top Banner */
     .banner { background: #e63946; border-radius: 16px; padding: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .game-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
     .balls { display: flex; gap: 4px; }
@@ -200,9 +196,11 @@
     .t-box { background: #ffffff; color: #000; padding: 2px 5px; border-radius: 4px; }
     .period-id { font-size: 11px; margin-top: 6px; font-weight: 700; }
 
+    /* Card Wrapper */
     .card-box { background: #131b2e; border: 1px solid #1e293b; border-radius: 16px; padding: 12px; margin-bottom: 15px; }
     .section-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #ffb703; }
 
+    /* Bot List View */
     .bot-list { display: flex; flex-direction: column; gap: 8px; }
     .bot-card { background: #1a243a; border: 1px solid #26334d; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .bot-left { display: flex; align-items: center; gap: 10px; }
@@ -222,6 +220,7 @@
     .card-pred-big { background: #ff9f1c; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
     .card-pred-small { background: #2ec4b6; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
 
+    /* Dedicated Bot Screen View */
     #botDetailPage { display: none; }
     .back-btn { background: #2b374e; color: #ffb703; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
     
@@ -230,6 +229,7 @@
     .next-bet-period { font-size: 13px; font-weight: bold; margin-top: 4px; color: #ffb703; }
     .next-bet-badge { margin-top: 8px; font-size: 22px; font-weight: 900; padding: 6px 28px; border-radius: 8px; display: inline-block; }
 
+    /* Bets Table */
     .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
     .bets-table th { text-align: left; color: #64748b; padding: 6px 2px; }
     .bets-table td { padding: 8px 2px; border-top: 1px solid #1e293b; }
@@ -241,18 +241,21 @@
 </head>
 <body>
 
+  <!-- App Main Header -->
   <div class="top-bar">
     <div class="logo">👑 DAMAN PREDICTION</div>
     <div class="login-btn">Login</div>
   </div>
 
+  <!-- Game Mode Selection -->
   <div class="game-tabs">
     <div class="tab active" id="tab30s" onclick="switchGameMode('30s')"><span style="display:block;">⏱️</span>WinGo 30s</div>
     <div class="tab" id="tab1m" onclick="switchGameMode('1m')"><span style="display:block;">⏱️</span>WinGo 1m</div>
-    <div class="tab disabled"><span style="display:block;">🔒</span>WinGo 3m</div>
-    <div class="tab disabled"><span style="display:block;">🔒</span>WinGo 5m</div>
+    <div class="tab disabled" onclick="alert('3 Min Mode Disabled')"><span style="display:block;">🔒</span>WinGo 3m</div>
+    <div class="tab disabled" onclick="alert('5 Min Mode Disabled')"><span style="display:block;">🔒</span>WinGo 5m</div>
   </div>
 
+  <!-- Realtime Game Status Red Banner -->
   <div class="banner">
     <div>
       <div class="game-name" id="bannerGameTitle">WinGo 30sec</div>
@@ -267,11 +270,13 @@
     </div>
   </div>
 
+  <!-- VIEW 1: All Bots List View -->
   <div class="card-box" id="botListPage">
     <div class="section-title">🏆 Select Bot to Open Prediction Page</div>
     <div class="bot-list" id="botListContainer"></div>
   </div>
 
+  <!-- VIEW 2: Dedicated Bot View -->
   <div class="card-box" id="botDetailPage">
     <button class="back-btn" onclick="showListPage()">← Back to All Bots</button>
     
@@ -285,12 +290,14 @@
       </div>
     </div>
 
+    <!-- Active Bot Prediction Box -->
     <div class="next-bet-card">
       <div class="next-bet-title">NEXT PERIOD PREDICTION</div>
       <div class="next-bet-period" id="detailPeriodNum">Period: Loading...</div>
       <div id="detailPredBadge">--</div>
     </div>
 
+    <!-- Clean History Table (10 Bets Only) -->
     <div style="font-size:12px; font-weight:700;">Last 10 Bets History</div>
     <table class="bets-table">
       <thead>
@@ -305,416 +312,391 @@
     </table>
   </div>
 
-  <script>
-    var currentGameMode = "30s";
-    var activeBotId = null;
-    var activePeriods = { "30s": "", "1m": "" };
+<script>
+  let currentGameMode = '30s';
+  let activeBotId = null;
+  let activePeriods = { '30s': '', '1m': '' };
 
-    function createInitialBots() {
-      return [
-        { id: 1, name: "Sophia", avatar: "https://randomuser.me/api/portraits/women/44.jpg", history: [], nextPred: "BIG" },
-        { id: 2, name: "Daniel", avatar: "https://randomuser.me/api/portraits/men/32.jpg", history: [], nextPred: "SMALL" },
-        { id: 3, name: "Emma", avatar: "https://randomuser.me/api/portraits/women/68.jpg", history: [], nextPred: "BIG" },
-        { id: 4, name: "Ryan", avatar: "https://randomuser.me/api/portraits/men/46.jpg", history: [], nextPred: "SMALL" },
-        { id: 5, name: "Olivia", avatar: "https://randomuser.me/api/portraits/women/65.jpg", history: [], nextPred: "BIG" },
-        { id: 6, name: "Liam", avatar: "https://randomuser.me/api/portraits/men/22.jpg", history: [], nextPred: "SMALL" },
-        { id: 7, name: "Ava", avatar: "https://randomuser.me/api/portraits/women/26.jpg", history: [], nextPred: "BIG" },
-        { id: 8, name: "Noah", avatar: "https://randomuser.me/api/portraits/men/85.jpg", history: [], nextPred: "SMALL" },
-        { id: 9, name: "Mia", avatar: "https://randomuser.me/api/portraits/women/12.jpg", history: [], nextPred: "BIG" },
-        { id: 10, name: "James", avatar: "https://randomuser.me/api/portraits/men/11.jpg", history: [], nextPred: "SMALL" }
-      ];
-    }
+  function createInitialBots() {
+    return [
+      { id: 1, name: "Sophia", avatar: "https://randomuser.me/api/portraits/women/44.jpg", history: [], nextPred: "BIG" },
+      { id: 2, name: "Daniel", avatar: "https://randomuser.me/api/portraits/men/32.jpg", history: [], nextPred: "SMALL" },
+      { id: 3, name: "Emma", avatar: "https://randomuser.me/api/portraits/women/68.jpg", history: [], nextPred: "BIG" },
+      { id: 4, name: "Ryan", avatar: "https://randomuser.me/api/portraits/men/46.jpg", history: [], nextPred: "SMALL" },
+      { id: 5, name: "Olivia", avatar: "https://randomuser.me/api/portraits/women/65.jpg", history: [], nextPred: "BIG" },
+      { id: 6, name: "Liam", avatar: "https://randomuser.me/api/portraits/men/22.jpg", history: [], nextPred: "SMALL" },
+      { id: 7, name: "Ava", avatar: "https://randomuser.me/api/portraits/women/26.jpg", history: [], nextPred: "BIG" },
+      { id: 8, name: "Noah", avatar: "https://randomuser.me/api/portraits/men/85.jpg", history: [], nextPred: "SMALL" },
+      { id: 9, name: "Mia", avatar: "https://randomuser.me/api/portraits/women/12.jpg", history: [], nextPred: "BIG" },
+      { id: 10, name: "James", avatar: "https://randomuser.me/api/portraits/men/11.jpg", history: [], nextPred: "SMALL" }
+    ];
+  }
 
-    var botData = { "30s": createInitialBots(), "1m": createInitialBots() };
-    var lastProcessedPeriod = { "30s": "", "1m": "" };
+  let botData = { '30s': createInitialBots(), '1m': createInitialBots() };
+  let lastProcessedPeriod = { '30s': '', '1m': '' };
 
-    function getAccuracy(bot) {
-      if (bot.history.length === 0) return 100;
-      var wins = 0;
-      for (var i = 0; i < bot.history.length; i++) {
-        if (bot.history[i].status === "WIN") wins++;
-      }
-      return Math.round((wins / bot.history.length) * 100);
-    }
+  function getAccuracy(bot) {
+    if (bot.history.length === 0) return 100;
+    let wins = bot.history.filter(h => h.status === 'WIN').length;
+    return Math.round((wins / bot.history.length) * 100);
+  }
 
-    function calculateDamanPeriodInfo(mode) {
-      var now = new Date();
-      var year = now.getFullYear();
-      var month = String(now.getMonth() + 1);
-      if (month.length < 2) month = "0" + month;
-      var day = String(now.getDate());
-      if (day.length < 2) day = "0" + day;
-      var dateStr = String(year) + String(month) + String(day);
+  function getLivePeriodAndTimer(mode) {
+    let now = new Date();
+    let year = now.getFullYear();
+    let month = String(now.getMonth() + 1).padStart(2, '0');
+    let day = String(now.getDate()).padStart(2, '0');
+    let datePrefix = `${year}${month}${day}`;
 
-      var totalSec = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-      var interval = (mode === "30s") ? 30 : 60;
-      var typeCode = (mode === "30s") ? "1000" : "1001";
+    let totalSecondsToday = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+    
+    let interval = mode === '30s' ? 30 : 60;
+    let typeCode = mode === '30s' ? '1000' : '1001';
 
-      var count = Math.floor(totalSec / interval) + 1;
-      var countStr = String(count);
-      while (countStr.length < 4) countStr = "0" + countStr;
+    let count = Math.floor(totalSecondsToday / interval) + 1;
+    let periodStr = `${datePrefix}${typeCode}${String(count).padStart(4, '0')}`;
+    let remainingSec = interval - (totalSecondsToday % interval);
 
-      var periodStr = dateStr + typeCode + countStr;
-      var remainingSec = interval - (totalSec % interval);
+    return { periodStr, remainingSec };
+  }
 
-      return { periodStr: periodStr, remainingSec: remainingSec };
-    }
+  function initBotHistory(mode) {
+    let { periodStr } = getLivePeriodAndTimer(mode);
+    let baseNum = BigInt(periodStr);
 
-    function initBotHistory(mode) {
-      var info = calculateDamanPeriodInfo(mode);
-      var baseNum = BigInt(info.periodStr);
-
-      for (var b = 0; b < botData[mode].length; b++) {
-        var bot = botData[mode][b];
-        bot.history = [];
-        for (var i = 10; i >= 1; i--) {
-          var num = Math.floor(Math.random() * 10);
-          var actualBS = (num >= 5) ? "BIG" : "SMALL";
-          var predBS = (Math.random() > 0.3) ? actualBS : (actualBS === "BIG" ? "SMALL" : "BIG");
-
-          bot.history.push({
-            period: (baseNum - BigInt(i)).toString(),
-            prediction: predBS,
-            result: actualBS + " (" + num + ")",
-            status: (predBS === actualBS) ? "WIN" : "LOSS"
-          });
-        }
-        bot.nextPred = (Math.random() > 0.5) ? "BIG" : "SMALL";
-      }
-    }
-
-    function renderBotList() {
-      var currentBots = botData[currentGameMode];
-      currentBots.sort(function(a, b) { return getAccuracy(b) - getAccuracy(a); });
-
-      var container = document.getElementById("botListContainer");
-      container.innerHTML = "";
-
-      for (var index = 0; index < currentBots.length; index++) {
-        var bot = currentBots[index];
-        var acc = getAccuracy(bot);
-        var rankClass = (index === 0) ? "rank-1" : (index === 1) ? "rank-2" : (index === 2) ? "rank-3" : "";
-        
-        var dotsHTML = "";
-        var lastHistory = bot.history.slice(-6);
-        for (var h = 0; h < lastHistory.length; h++) {
-          var item = lastHistory[h];
-          var dotClass = (item.status === "WIN") ? "dot-win" : "dot-loss";
-          var dotSymbol = (item.status === "WIN") ? "✓" : "✕";
-          dotsHTML += '<div class="dot ' + dotClass + '">' + dotSymbol + '</div>';
-        }
-
-        var predBadgeClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
-
-        var cardHTML = '<div class="bot-card" onclick="openBotPage(' + bot.id + ')">' +
-            '<div class="bot-left">' +
-              '<div class="rank-num ' + rankClass + '">' + (index + 1) + '</div>' +
-              '<img class="bot-avatar" src="' + bot.avatar + '">' +
-              '<div>' +
-                '<div><span class="bot-name">' + bot.name + '</span><span class="bot-acc-inline">' + acc + '%</span></div>' +
-                '<div class="history-dots">' + dotsHTML + '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="bot-pred-right">' +
-              '<span class="' + predBadgeClass + '">' + bot.nextPred + '</span>' +
-            '</div>' +
-          '</div>';
-
-        container.innerHTML += cardHTML;
-      }
-    }
-
-    function openBotPage(id) {
-      activeBotId = id;
-      document.getElementById("botListPage").style.display = "none";
-      document.getElementById("botDetailPage").style.display = "block";
-      renderActiveBotPage();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function showListPage() {
-      activeBotId = null;
-      document.getElementById("botDetailPage").style.display = "none";
-      document.getElementById("botListPage").style.display = "block";
-      renderBotList();
-    }
-
-    function renderActiveBotPage() {
-      if (!activeBotId) return;
-
-      var currentBots = botData[currentGameMode];
-      var bot = null;
-      for (var i = 0; i < currentBots.length; i++) {
-        if (currentBots[i].id === activeBotId) {
-          bot = currentBots[i];
-          break;
-        }
-      }
-      if (!bot) return;
-
-      document.getElementById("activeBotName").innerText = bot.name;
-      document.getElementById("activeBotAvatar").src = bot.avatar;
-      document.getElementById("activeBotAcc").innerText = getAccuracy(bot) + "%";
-      document.getElementById("detailPeriodNum").innerText = "Period: " + activePeriods[currentGameMode];
-      
-      var predClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
-      document.getElementById("detailPredBadge").innerHTML = '<span class="' + predClass + ' next-bet-badge">' + bot.nextPred + '</span>';
-
-      var rowsHTML = "";
-      var reversedHistory = bot.history.slice().reverse();
-      for (var k = 0; k < reversedHistory.length; k++) {
-        var h = reversedHistory[k];
-        var statusBadge = (h.status === "WIN") ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
-        var predBadge = (h.prediction === "BIG") ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
-
-        rowsHTML += '<tr>' +
-            '<td>' + h.period.slice(-6) + '</td>' +
-            '<td>' + predBadge + '</td>' +
-            '<td><b>' + h.result + '</b></td>' +
-            '<td>' + statusBadge + '</td>' +
-          '</tr>';
-      }
-
-      document.getElementById("betsHistoryTable").innerHTML = rowsHTML;
-    }
-
-    function updatePredictionsOnPeriodChange(completedPeriod, mode) {
-      if (lastProcessedPeriod[mode] === completedPeriod) return;
-      lastProcessedPeriod[mode] = completedPeriod;
-
-      var actualNumber = Math.floor(Math.random() * 10);
-      var actualBS = (actualNumber >= 5) ? "BIG" : "SMALL";
-
-      for (var i = 0; i < botData[mode].length; i++) {
-        var bot = botData[mode][i];
-        var win = (bot.nextPred === actualBS);
-        if (bot.history.length >= 10) bot.history.shift();
+    botData[mode].forEach(bot => {
+      bot.history = [];
+      for (let i = 10; i >= 1; i--) {
+        let num = Math.floor(Math.random() * 10);
+        let actualBS = num >= 5 ? 'BIG' : 'SMALL';
+        let predBS = (Math.random() > 0.3) ? actualBS : (actualBS === 'BIG' ? 'SMALL' : 'BIG');
 
         bot.history.push({
-          period: completedPeriod,
-          prediction: bot.nextPred,
-          result: actualBS + " (" + actualNumber + ")",
-          status: win ? "WIN" : "LOSS"
+          period: (baseNum - BigInt(i)).toString(),
+          prediction: predBS,
+          result: `${actualBS} (${num})`,
+          status: (predBS === actualBS) ? 'WIN' : 'LOSS'
         });
-
-        bot.nextPred = (Math.random() > 0.5) ? "BIG" : "SMALL";
       }
+      bot.nextPred = Math.random() > 0.5 ? 'BIG' : 'SMALL';
+    });
+  }
 
-      if (mode === currentGameMode) {
-        var ballsContainer = document.getElementById("recentBalls");
-        var bg = (actualNumber >= 5) ? "ball-green" : "ball-red";
-        ballsContainer.innerHTML = '<div class="ball ' + bg + '">' + actualNumber + '</div>' + ballsContainer.innerHTML.slice(0, 120);
+  function renderBotList() {
+    let currentBots = botData[currentGameMode];
+    currentBots.sort((a, b) => getAccuracy(b) - getAccuracy(a));
 
-        if (activeBotId) renderActiveBotPage();
-        else renderBotList();
+    const container = document.getElementById('botListContainer');
+    container.innerHTML = '';
+
+    currentBots.forEach((bot, index) => {
+      let acc = getAccuracy(bot);
+      let rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+      let dotsHTML = bot.history.slice(-6).map(h => `<div class="dot ${h.status === 'WIN' ? 'dot-win' : 'dot-loss'}">${h.status === 'WIN' ? '✓' : '✕'}</div>`).join('');
+      let predBadgeClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
+
+      container.innerHTML += `
+        <div class="bot-card" onclick="openBotPage(${bot.id})">
+          <div class="bot-left">
+            <div class="rank-num ${rankClass}">${index + 1}</div>
+            <img class="bot-avatar" src="${bot.avatar}">
+            <div>
+              <div><span class="bot-name">${bot.name}</span><span class="bot-acc-inline">${acc}%</span></div>
+              <div class="history-dots">${dotsHTML}</div>
+            </div>
+          </div>
+          <div class="bot-pred-right">
+            <span class="${predBadgeClass}">${bot.nextPred}</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function openBotPage(id) {
+    activeBotId = id;
+    document.getElementById('botListPage').style.display = 'none';
+    document.getElementById('botDetailPage').style.display = 'block';
+    renderActiveBotPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showListPage() {
+    activeBotId = null;
+    document.getElementById('botDetailPage').style.display = 'none';
+    document.getElementById('botListPage').style.display = 'block';
+    renderBotList();
+  }
+
+  function renderActiveBotPage() {
+    if (!activeBotId) return;
+
+    let currentBots = botData[currentGameMode];
+    let bot = currentBots.find(b => b.id === activeBotId);
+    if (!bot) return;
+
+    document.getElementById('activeBotName').innerText = bot.name;
+    document.getElementById('activeBotAvatar').src = bot.avatar;
+    document.getElementById('activeBotAcc').innerText = `${getAccuracy(bot)}%`;
+    document.getElementById('detailPeriodNum').innerText = `Period: ${activePeriods[currentGameMode]}`;
+    
+    let predClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
+    document.getElementById('detailPredBadge').innerHTML = `<span class="${predClass} next-bet-badge">${bot.nextPred}</span>`;
+
+    let rowsHTML = '';
+    [...bot.history].reverse().forEach(h => {
+      let statusBadge = h.status === 'WIN' ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
+      let predBadge = h.prediction === 'BIG' ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
+
+      rowsHTML += `
+        <tr>
+          <td>${h.period.slice(-6)}</td>
+          <td>${predBadge}</td>
+          <td><b>${h.result}</b></td>
+          <td>${statusBadge}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById('betsHistoryTable').innerHTML = rowsHTML;
+  }
+
+  function updateBotPredictionsOnNewPeriod(completedPeriod, mode) {
+    if (lastProcessedPeriod[mode] === completedPeriod) return;
+    lastProcessedPeriod[mode] = completedPeriod;
+
+    let actualNumber = Math.floor(Math.random() * 10);
+    let actualBS = actualNumber >= 5 ? 'BIG' : 'SMALL';
+
+    botData[mode].forEach(bot => {
+      let win = (bot.nextPred === actualBS);
+      if (bot.history.length >= 10) bot.history.shift();
+
+      bot.history.push({
+        period: completedPeriod,
+        prediction: bot.nextPred,
+        result: `${actualBS} (${actualNumber})`,
+        status: win ? 'WIN' : 'LOSS'
+      });
+
+      bot.nextPred = Math.random() > 0.5 ? 'BIG' : 'SMALL';
+    });
+
+    if (mode === currentGameMode) {
+      let ballsContainer = document.getElementById('recentBalls');
+      let bg = actualNumber >= 5 ? 'ball-green' : 'ball-red';
+      ballsContainer.innerHTML = `<div class="ball ${bg}">${actualNumber}</div>` + ballsContainer.innerHTML;
+      
+      // Keep only last 5 balls visible
+      if (ballsContainer.children.length > 5) {
+        ballsContainer.removeChild(ballsContainer.lastChild);
       }
-    }
-
-    function switchGameMode(mode) {
-      if (mode === currentGameMode) return;
-      currentGameMode = mode;
-
-      document.getElementById("tab30s").classList.remove("active");
-      document.getElementById("tab1m").classList.remove("active");
-
-      if (mode === "30s") {
-        document.getElementById("tab30s").classList.add("active");
-        document.getElementById("bannerGameTitle").innerText = "WinGo 30sec";
-      } else {
-        document.getElementById("tab1m").classList.add("active");
-        document.getElementById("bannerGameTitle").innerText = "WinGo 1 Min";
-      }
-
-      var info = calculateDamanPeriodInfo(currentGameMode);
-      activePeriods[currentGameMode] = info.periodStr;
-      document.getElementById("periodId").innerText = info.periodStr;
 
       if (activeBotId) renderActiveBotPage();
       else renderBotList();
     }
+  }
 
-    setInterval(function() {
-      var modes = ["30s", "1m"];
-      for (var m = 0; m < modes.length; m++) {
-        var mode = modes[m];
-        var info = calculateDamanPeriodInfo(mode);
+  function switchGameMode(mode) {
+    if (mode === currentGameMode) return;
+    currentGameMode = mode;
 
-        if (activePeriods[mode] && activePeriods[mode] !== info.periodStr) {
-          updatePredictionsOnPeriodChange(activePeriods[mode], mode);
-        }
-        activePeriods[mode] = info.periodStr;
+    document.getElementById('tab30s').classList.remove('active');
+    document.getElementById('tab1m').classList.remove('active');
 
-        if (mode === currentGameMode) {
-          document.getElementById("periodId").innerText = info.periodStr;
-          if (activeBotId) document.getElementById("detailPeriodNum").innerText = "Period: " + info.periodStr;
+    if (mode === '30s') {
+      document.getElementById('tab30s').classList.add('active');
+      document.getElementById('bannerGameTitle').innerText = 'WinGo 30sec';
+    } else {
+      document.getElementById('tab1m').classList.add('active');
+      document.getElementById('bannerGameTitle').innerText = 'WinGo 1 Min';
+    }
 
-          var sStr = String(info.remainingSec);
-          if (sStr.length < 2) sStr = "0" + sStr;
-          document.getElementById("t1").innerText = sStr[0];
-          document.getElementById("t2").innerText = sStr[1];
-        }
+    let { periodStr } = getLivePeriodAndTimer(currentGameMode);
+    activePeriods[currentGameMode] = periodStr;
+    document.getElementById('periodId').innerText = periodStr;
+
+    if (activeBotId) renderActiveBotPage();
+    else renderBotList();
+  }
+
+  // Master Clock Interval
+  setInterval(() => {
+    ['30s', '1m'].forEach(mode => {
+      let { periodStr, remainingSec } = getLivePeriodAndTimer(mode);
+      
+      if (activePeriods[mode] && activePeriods[mode] !== periodStr) {
+        updateBotPredictionsOnNewPeriod(activePeriods[mode], mode);
       }
-    }, 1000);
+      activePeriods[mode] = periodStr;
 
-    initBotHistory("30s");
-    initBotHistory("1m");
+      if (mode === currentGameMode) {
+        document.getElementById('periodId').innerText = periodStr;
+        if (activeBotId) document.getElementById('detailPeriodNum').innerText = `Period: ${periodStr}`;
 
-    var init30 = calculateDamanPeriodInfo("30s");
-    var init1m = calculateDamanPeriodInfo("1m");
-    activePeriods["30s"] = init30.periodStr;
-    activePeriods["1m"] = init1m.periodStr;
+        let sStr = String(remainingSec).padStart(2, '0');
+        document.getElementById('t1').innerText = sStr[0];
+        document.getElementById('t2').innerText = sStr[1];
+      }
+    });
+  }, 1000);
 
-    document.getElementById("periodId").innerText = activePeriods["30s"];
-    renderBotList();
-  </script>
+  initBotHistory('30s');
+  initBotHistory('1m');
+  
+  let init30 = getLivePeriodAndTimer('30s');
+  activePeriods['30s'] = init30.periodStr;
+  document.getElementById('periodId').innerText = init30.periodStr;
+  
+  renderBotList();
+</script>
 </body>
 </html>
-￼Enter      var dateStr = String(year) + String(month) + String(day);
+￼Enter  }
 
-      var totalSec = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-      var interval = (mode === "30s") ? 30 : 60;
-      var typeCode = (mode === "30s") ? "1000" : "1001";
+  let botData = { '30s': createInitialBots(), '1m': createInitialBots() };
+  let lastProcessedPeriod = { '30s': '', '1m': '' };
 
-      var count = Math.floor(totalSec / interval) + 1;
-      var countStr = String(count);
-      while (countStr.length < 4) countStr = "0" + countStr;
+  function getAccuracy(bot) {
+    if (bot.history.length === 0) return 100;
+    let wins = bot.history.filter(h => h.status === 'WIN').length;
+    return Math.round((wins / bot.history.length) * 100);
+  }
 
-      var periodStr = dateStr + typeCode + countStr;
-      var remainingSec = interval - (totalSec % interval);
+  function getLivePeriodAndTimer(mode) {
+    let now = new Date();
+    let year = now.getFullYear();
+    let month = String(now.getMonth() + 1).padStart(2, '0');
+    let day = String(now.getDate()).padStart(2, '0');
+    let datePrefix = `${year}${month}${day}`;
 
-      return { periodStr: periodStr, remainingSec: remainingSec };
-    }
+    let totalSecondsToday = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+    
+    let interval = mode === '30s' ? 30 : 60;
+    let typeCode = mode === '30s' ? '1000' : '1001';
 
-    function initBotHistory(mode) {
-      var info = calculateDamanPeriodInfo(mode);
-      var baseNum = BigInt(info.periodStr);
+    let count = Math.floor(totalSecondsToday / interval) + 1;
+    let periodStr = `${datePrefix}${typeCode}${String(count).padStart(4, '0')}`;
+    let remainingSec = interval - (totalSecondsToday % interval);
 
-      for (var b = 0; b < botData[mode].length; b++) {
-        var bot = botData[mode][b];
-        bot.history = [];
-        for (var i = 10; i >= 1; i--) {
-          var num = Math.floor(Math.random() * 10);
-          var actualBS = (num >= 5) ? "BIG" : "SMALL";
-          var predBS = (Math.random() > 0.3) ? actualBS : (actualBS === "BIG" ? "SMALL" : "BIG");
+    return { periodStr, remainingSec };
+  }
 
-          bot.history.push({
-            period: (baseNum - BigInt(i)).toString(),
-            prediction: predBS,
-            result: actualBS + " (" + num + ")",
-            status: (predBS === actualBS) ? "WIN" : "LOSS"
-          });
-        }
-        bot.nextPred = (Math.random() > 0.5) ? "BIG" : "SMALL";
-      }
-    }
+  function initBotHistory(mode) {
+    let { periodStr } = getLivePeriodAndTimer(mode);
+    let baseNum = BigInt(periodStr);
 
-    function renderBotList() {
-      var currentBots = botData[currentGameMode];
-      currentBots.sort(function(a, b) { return getAccuracy(b) - getAccuracy(a); });
-
-      var container = document.getElementById("botListContainer");
-      container.innerHTML = "";
-
-      for (var index = 0; index < currentBots.length; index++) {
-        var bot = currentBots[index];
-        var acc = getAccuracy(bot);
-        var rankClass = (index === 0) ? "rank-1" : (index === 1) ? "rank-2" : (index === 2) ? "rank-3" : "";
-        
-        var dotsHTML = "";
-        var lastHistory = bot.history.slice(-6);
-        for (var h = 0; h < lastHistory.length; h++) {
-          var item = lastHistory[h];
-          var dotClass = (item.status === "WIN") ? "dot-win" : "dot-loss";
-          var dotSymbol = (item.status === "WIN") ? "✓" : "✕";
-          dotsHTML += '<div class="dot ' + dotClass + '">' + dotSymbol + '</div>';
-        }
-
-        var predBadgeClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
-
-        var cardHTML = '<div class="bot-card" onclick="openBotPage(' + bot.id + ')">' +
-            '<div class="bot-left">' +
-              '<div class="rank-num ' + rankClass + '">' + (index + 1) + '</div>' +
-              '<img class="bot-avatar" src="' + bot.avatar + '">' +
-              '<div>' +
-                '<div><span class="bot-name">' + bot.name + '</span><span class="bot-acc-inline">' + acc + '%</span></div>' +
-                '<div class="history-dots">' + dotsHTML + '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="bot-pred-right">' +
-              '<span class="' + predBadgeClass + '">' + bot.nextPred + '</span>' +
-            '</div>' +
-          '</div>';
-   container.innerHTML += cardHTML;
-      }
-    }
-
-    function openBotPage(id) {
-      activeBotId = id;
-      document.getElementById("botListPage").style.display = "none";
-      document.getElementById("botDetailPage").style.display = "block";
-      renderActiveBotPage();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function showListPage() {
-      activeBotId = null;
-      document.getElementById("botDetailPage").style.display = "none";
-      document.getElementById("botListPage").style.display = "block";
-      renderBotList();
-    }
-
-    function renderActiveBotPage() {
-      if (!activeBotId) return;
-
-      var currentBots = botData[currentGameMode];
-      var bot = null;
-      for (var i = 0; i < currentBots.length; i++) {
-        if (currentBots[i].id === activeBotId) {
-          bot = currentBots[i];
-          break;
-        }
-      }
-      if (!bot) return;
-
-      document.getElementById("activeBotName").innerText = bot.name;
-      document.getElementById("activeBotAvatar").src = bot.avatar;
-      document.getElementById("activeBotAcc").innerText = getAccuracy(bot) + "%";
-      document.getElementById("detailPeriodNum").innerText = "Period: " + activePeriods[currentGameMode];
-      
-      var predClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
-      document.getElementById("detailPredBadge").innerHTML = '<span class="' + predClass + ' next-bet-badge">' + bot.nextPred + '</span>';
-
-      var rowsHTML = "";
-      var reversedHistory = bot.history.slice().reverse();
-      for (var k = 0; k < reversedHistory.length; k++) {
-        var h = reversedHistory[k];
-        var statusBadge = (h.status === "WIN") ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
-        var predBadge = (h.prediction === "BIG") ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
-
-        rowsHTML += '<tr>' +
-            '<td>' + h.period.slice(-6) + '</td>' +
-            '<td>' + predBadge + '</td>' +
-            '<td><b>' + h.result + '</b></td>' +
-            '<td>' + statusBadge + '</td>' +
-          '</tr>';
-      }
-
-      document.getElementById("betsHistoryTable").innerHTML = rowsHTML;
-    }
-
-    function updatePredictionsOnPeriodChange(completedPeriod, mode) {
-      if (lastProcessedPeriod[mode] === completedPeriod) return;
-      lastProcessedPeriod[mode] = completedPeriod;
-
-      var actualNumber = Math.floor(Math.random() * 10);
-      var actualBS = (actualNumber >= 5) ? "BIG" : "SMALL";
-
-      for (var i = 0; i < botData[mode].length; i++) {
-        var bot = botData[mode][i];
-        var win = (bot.nextPred === actualBS);
-        if (bot.history.length >= 10) bot.history.shift();
+    botData[mode].forEach(bot => {
+      bot.history = [];
+      for (let i = 10; i >= 1; i--) {
+        let num = Math.floor(Math.random() * 10);
+        let actualBS = num >= 5 ? 'BIG' : 'SMALL';
+        let predBS = (Math.random() > 0.3) ? actualBS : (actualBS === 'BIG' ? 'SMALL' : 'BIG');
 
         bot.history.push({
-          period: completedPeriod,
-          prediction: bot.nextPred,
-          result: actualBS + " (" + actualNumber + ")",
+          period: (baseNum - BigInt(i)).toString(),
+          prediction: predBS,
+          result: `${actualBS} (${num})`,
+          status: (predBS === actualBS) ? 'WIN' : 'LOSS'
+        });
+      }
+      bot.nextPred = Math.random() > 0.5 ? 'BIG' : 'SMALL';
+    });
+  }
+
+  function renderBotList() {
+    let currentBots = botData[currentGameMode];
+    currentBots.sort((a, b) => getAccuracy(b) - getAccuracy(a));
+
+    const container = document.getElementById('botListContainer');
+    container.innerHTML = '';
+
+    currentBots.forEach((bot, index) => {
+      let acc = getAccuracy(bot);
+      let rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+      let dotsHTML = bot.history.slice(-6).map(h => `<div class="dot ${h.status === 'WIN' ? 'dot-win' : 'dot-loss'}">${h.status === 'WIN' ? '✓' : '✕'}</div>`).join('');
+      let predBadgeClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
+
+      container.innerHTML += `
+        <div class="bot-card" onclick="openBotPage(${bot.id})">
+          <div class="bot-left">
+            <div class="rank-num ${rankClass}">${index + 1}</div>
+            <img class="bot-avatar" src="${bot.avatar}">
+            <div>
+              <div><span class="bot-name">${bot.name}</span><span class="bot-acc-inline">${acc}%</span></div>
+              <div class="history-dots">${dotsHTML}</div>
+            </div>
+    </div>
+          <div class="bot-pred-right">
+            <span class="${predBadgeClass}">${bot.nextPred}</span>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function openBotPage(id) {
+    activeBotId = id;
+    document.getElementById('botListPage').style.display = 'none';
+    document.getElementById('botDetailPage').style.display = 'block';
+    renderActiveBotPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showListPage() {
+    activeBotId = null;
+    document.getElementById('botDetailPage').style.display = 'none';
+    document.getElementById('botListPage').style.display = 'block';
+    renderBotList();
+  }
+
+  function renderActiveBotPage() {
+    if (!activeBotId) return;
+
+    let currentBots = botData[currentGameMode];
+    let bot = currentBots.find(b => b.id === activeBotId);
+    if (!bot) return;
+
+    document.getElementById('activeBotName').innerText = bot.name;
+    document.getElementById('activeBotAvatar').src = bot.avatar;
+    document.getElementById('activeBotAcc').innerText = `${getAccuracy(bot)}%`;
+    document.getElementById('detailPeriodNum').innerText = `Period: ${activePeriods[currentGameMode]}`;
+    
+    let predClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
+    document.getElementById('detailPredBadge').innerHTML = `<span class="${predClass} next-bet-badge">${bot.nextPred}</span>`;
+
+    let rowsHTML = '';
+    [...bot.history].reverse().forEach(h => {
+      let statusBadge = h.status === 'WIN' ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
+      let predBadge = h.prediction === 'BIG' ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
+
+      rowsHTML += `
+        <tr>
+          <td>${h.period.slice(-6)}</td>
+          <td>${predBadge}</td>
+          <td><b>${h.result}</b></td>
+          <td>${statusBadge}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById('betsHistoryTable').innerHTML = rowsHTML;
+  }
+
+  function updateBotPredictionsOnNewPeriod(completedPeriod, mode) {
+    if (lastProcessedPeriod[mode] === completedPeriod) return;
+    lastProcessedPeriod[mode] = completedPeriod;
+
+    let actualNumber = Math.floor(Math.random() * 10);
+    let actualBS = actualNumber >= 5 ? 'BIG' : 'SMALL';
+
+    botData[mode].forEach(bot => {
+      let win = (bot.nextPred === actualBS);
+      if (bot.history.length >= 10) bot.history.shift();
+
+      bot.history.push({
+        period: completedPeriod,
+        prediction: bot.nextPred,
+        result: `${actualBS} (${actualNumber})`,
+        status: win ? 'WIN' : 'LOSS'
+      });
