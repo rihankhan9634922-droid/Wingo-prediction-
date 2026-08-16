@@ -133,9 +133,9 @@
   </div>
 
   <script>
-    var currentGameMode = '30s';
+    var currentGameMode = "30s";
     var activeBotId = null;
-    var activePeriods = { '30s': '', '1m': '' };
+    var activePeriods = { "30s": "", "1m": "" };
 
     function createInitialBots() {
       return [
@@ -152,7 +152,25 @@
       ];
     }
 
-    var botData = { '30s': createInitialBots(), '1m': createInitialBots() };
+    var botData = { "30s": createInitialBots(), "1m": createInitialBots() };
+    var lastProcessedPeriod = { "30s": "", "1m": "" };
+
+    function getAccuracy(bot) {
+      if (bot.history.length === 0) return 100;
+      var wins = 0;
+      for (var i = 0; i < bot.history.length; i++) {
+        if (bot.history[i].status === "WIN") wins++;
+      }
+      return Math.round((wins / bot.history.length) * 100);
+    }
+
+    function calculateDamanPeriodInfo(mode) {
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = String(now.getMonth() + 1);
+      if (month.length < 2) month = "0" + month;
+      var day = String(now.getDate());
+      if (day.length < 2) day = "0" + day;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -288,9 +306,9 @@
   </div>
 
   <script>
-    var currentGameMode = '30s';
+    var currentGameMode = "30s";
     var activeBotId = null;
-    var activePeriods = { '30s': '', '1m': '' };
+    var activePeriods = { "30s": "", "1m": "" };
 
     function createInitialBots() {
       return [
@@ -307,28 +325,36 @@
       ];
     }
 
-    var botData = { '30s': createInitialBots(), '1m': createInitialBots() };
-    var lastProcessedPeriod = { '30s': '', '1m': '' };
+    var botData = { "30s": createInitialBots(), "1m": createInitialBots() };
+    var lastProcessedPeriod = { "30s": "", "1m": "" };
 
     function getAccuracy(bot) {
       if (bot.history.length === 0) return 100;
-      var wins = bot.history.filter(function(h) { return h.status === 'WIN'; }).length;
+      var wins = 0;
+      for (var i = 0; i < bot.history.length; i++) {
+        if (bot.history[i].status === "WIN") wins++;
+      }
       return Math.round((wins / bot.history.length) * 100);
     }
 
     function calculateDamanPeriodInfo(mode) {
       var now = new Date();
       var year = now.getFullYear();
-      var month = String(now.getMonth() + 1).padStart(2, '0');
-      var day = String(now.getDate()).padStart(2, '0');
-      var dateStr = year + month + day;
+      var month = String(now.getMonth() + 1);
+      if (month.length < 2) month = "0" + month;
+      var day = String(now.getDate());
+      if (day.length < 2) day = "0" + day;
+      var dateStr = String(year) + String(month) + String(day);
 
       var totalSec = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-      var interval = (mode === '30s') ? 30 : 60;
-      var typeCode = (mode === '30s') ? '1000' : '1001';
+      var interval = (mode === "30s") ? 30 : 60;
+      var typeCode = (mode === "30s") ? "1000" : "1001";
 
       var count = Math.floor(totalSec / interval) + 1;
-      var periodStr = dateStr + typeCode + String(count).padStart(4, '0');
+      var countStr = String(count);
+      while (countStr.length < 4) countStr = "0" + countStr;
+
+      var periodStr = dateStr + typeCode + countStr;
       var remainingSec = interval - (totalSec % interval);
 
       return { periodStr: periodStr, remainingSec: remainingSec };
@@ -338,43 +364,47 @@
       var info = calculateDamanPeriodInfo(mode);
       var baseNum = BigInt(info.periodStr);
 
-      botData[mode].forEach(function(bot) {
+      for (var b = 0; b < botData[mode].length; b++) {
+        var bot = botData[mode][b];
         bot.history = [];
         for (var i = 10; i >= 1; i--) {
           var num = Math.floor(Math.random() * 10);
-          var actualBS = num >= 5 ? 'BIG' : 'SMALL';
-          var predBS = (Math.random() > 0.3) ? actualBS : (actualBS === 'BIG' ? 'SMALL' : 'BIG');
+          var actualBS = (num >= 5) ? "BIG" : "SMALL";
+          var predBS = (Math.random() > 0.3) ? actualBS : (actualBS === "BIG" ? "SMALL" : "BIG");
 
           bot.history.push({
             period: (baseNum - BigInt(i)).toString(),
             prediction: predBS,
             result: actualBS + " (" + num + ")",
-            status: (predBS === actualBS) ? 'WIN' : 'LOSS'
+            status: (predBS === actualBS) ? "WIN" : "LOSS"
           });
         }
-        bot.nextPred = Math.random() > 0.5 ? 'BIG' : 'SMALL';
-      });
+        bot.nextPred = (Math.random() > 0.5) ? "BIG" : "SMALL";
+      }
     }
 
     function renderBotList() {
       var currentBots = botData[currentGameMode];
       currentBots.sort(function(a, b) { return getAccuracy(b) - getAccuracy(a); });
 
-      var container = document.getElementById('botListContainer');
-      container.innerHTML = '';
+      var container = document.getElementById("botListContainer");
+      container.innerHTML = "";
 
-      currentBots.forEach(function(bot, index) {
+      for (var index = 0; index < currentBots.length; index++) {
+        var bot = currentBots[index];
         var acc = getAccuracy(bot);
-        var rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+        var rankClass = (index === 0) ? "rank-1" : (index === 1) ? "rank-2" : (index === 2) ? "rank-3" : "";
         
-        var dotsHTML = '';
-        bot.history.slice(-6).forEach(function(h) {
-          var dotClass = (h.status === 'WIN') ? 'dot-win' : 'dot-loss';
-          var dotSymbol = (h.status === 'WIN') ? '✓' : '✕';
+        var dotsHTML = "";
+        var lastHistory = bot.history.slice(-6);
+        for (var h = 0; h < lastHistory.length; h++) {
+          var item = lastHistory[h];
+          var dotClass = (item.status === "WIN") ? "dot-win" : "dot-loss";
+          var dotSymbol = (item.status === "WIN") ? "✓" : "✕";
           dotsHTML += '<div class="dot ' + dotClass + '">' + dotSymbol + '</div>';
-        });
+        }
 
-        var predBadgeClass = (bot.nextPred === 'BIG') ? 'card-pred-big' : 'card-pred-small';
+        var predBadgeClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
 
         var cardHTML = '<div class="bot-card" onclick="openBotPage(' + bot.id + ')">' +
             '<div class="bot-left">' +
@@ -391,21 +421,21 @@
           '</div>';
 
         container.innerHTML += cardHTML;
-      });
+      }
     }
 
     function openBotPage(id) {
       activeBotId = id;
-      document.getElementById('botListPage').style.display = 'none';
-      document.getElementById('botDetailPage').style.display = 'block';
+      document.getElementById("botListPage").style.display = "none";
+      document.getElementById("botDetailPage").style.display = "block";
       renderActiveBotPage();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function showListPage() {
       activeBotId = null;
-      document.getElementById('botDetailPage').style.display = 'none';
-      document.getElementById('botListPage').style.display = 'block';
+      document.getElementById("botDetailPage").style.display = "none";
+      document.getElementById("botListPage").style.display = "block";
       renderBotList();
     }
 
@@ -413,21 +443,29 @@
       if (!activeBotId) return;
 
       var currentBots = botData[currentGameMode];
-      var bot = currentBots.find(function(b) { return b.id === activeBotId; });
+      var bot = null;
+      for (var i = 0; i < currentBots.length; i++) {
+        if (currentBots[i].id === activeBotId) {
+          bot = currentBots[i];
+          break;
+        }
+      }
       if (!bot) return;
 
-      document.getElementById('activeBotName').innerText = bot.name;
-      document.getElementById('activeBotAvatar').src = bot.avatar;
-      document.getElementById('activeBotAcc').innerText = getAccuracy(bot) + '%';
-      document.getElementById('detailPeriodNum').innerText = 'Period: ' + activePeriods[currentGameMode];
+      document.getElementById("activeBotName").innerText = bot.name;
+      document.getElementById("activeBotAvatar").src = bot.avatar;
+      document.getElementById("activeBotAcc").innerText = getAccuracy(bot) + "%";
+      document.getElementById("detailPeriodNum").innerText = "Period: " + activePeriods[currentGameMode];
       
-      var predClass = (bot.nextPred === 'BIG') ? 'card-pred-big' : 'card-pred-small';
-      document.getElementById('detailPredBadge').innerHTML = '<span class="' + predClass + ' next-bet-badge">' + bot.nextPred + '</span>';
+      var predClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
+      document.getElementById("detailPredBadge").innerHTML = '<span class="' + predClass + ' next-bet-badge">' + bot.nextPred + '</span>';
 
-      var rowsHTML = '';
-      bot.history.slice().reverse().forEach(function(h) {
-        var statusBadge = (h.status === 'WIN') ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
-        var predBadge = (h.prediction === 'BIG') ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
+      var rowsHTML = "";
+      var reversedHistory = bot.history.slice().reverse();
+      for (var k = 0; k < reversedHistory.length; k++) {
+        var h = reversedHistory[k];
+        var statusBadge = (h.status === "WIN") ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
+        var predBadge = (h.prediction === "BIG") ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
 
         rowsHTML += '<tr>' +
             '<td>' + h.period.slice(-6) + '</td>' +
@@ -435,9 +473,9 @@
             '<td><b>' + h.result + '</b></td>' +
             '<td>' + statusBadge + '</td>' +
           '</tr>';
-      });
+      }
 
-      document.getElementById('betsHistoryTable').innerHTML = rowsHTML;
+      document.getElementById("betsHistoryTable").innerHTML = rowsHTML;
     }
 
     function updatePredictionsOnPeriodChange(completedPeriod, mode) {
@@ -445,9 +483,10 @@
       lastProcessedPeriod[mode] = completedPeriod;
 
       var actualNumber = Math.floor(Math.random() * 10);
-      var actualBS = actualNumber >= 5 ? 'BIG' : 'SMALL';
+      var actualBS = (actualNumber >= 5) ? "BIG" : "SMALL";
 
-      botData[mode].forEach(function(bot) {
+      for (var i = 0; i < botData[mode].length; i++) {
+        var bot = botData[mode][i];
         var win = (bot.nextPred === actualBS);
         if (bot.history.length >= 10) bot.history.shift();
 
@@ -455,15 +494,15 @@
           period: completedPeriod,
           prediction: bot.nextPred,
           result: actualBS + " (" + actualNumber + ")",
-          status: win ? 'WIN' : 'LOSS'
+          status: win ? "WIN" : "LOSS"
         });
 
-        bot.nextPred = (Math.random() > 0.5) ? 'BIG' : 'SMALL';
-      });
+        bot.nextPred = (Math.random() > 0.5) ? "BIG" : "SMALL";
+      }
 
       if (mode === currentGameMode) {
-        var ballsContainer = document.getElementById('recentBalls');
-        var bg = actualNumber >= 5 ? 'ball-green' : 'ball-red';
+        var ballsContainer = document.getElementById("recentBalls");
+        var bg = (actualNumber >= 5) ? "ball-green" : "ball-red";
         ballsContainer.innerHTML = '<div class="ball ' + bg + '">' + actualNumber + '</div>' + ballsContainer.innerHTML.slice(0, 120);
 
         if (activeBotId) renderActiveBotPage();
@@ -475,27 +514,29 @@
       if (mode === currentGameMode) return;
       currentGameMode = mode;
 
-      document.getElementById('tab30s').classList.remove('active');
-      document.getElementById('tab1m').classList.remove('active');
+      document.getElementById("tab30s").classList.remove("active");
+      document.getElementById("tab1m").classList.remove("active");
 
-      if (mode === '30s') {
-        document.getElementById('tab30s').classList.add('active');
-        document.getElementById('bannerGameTitle').innerText = 'WinGo 30sec';
+      if (mode === "30s") {
+        document.getElementById("tab30s").classList.add("active");
+        document.getElementById("bannerGameTitle").innerText = "WinGo 30sec";
       } else {
-        document.getElementById('tab1m').classList.add('active');
-        document.getElementById('bannerGameTitle').innerText = 'WinGo 1 Min';
+        document.getElementById("tab1m").classList.add("active");
+        document.getElementById("bannerGameTitle").innerText = "WinGo 1 Min";
       }
 
       var info = calculateDamanPeriodInfo(currentGameMode);
       activePeriods[currentGameMode] = info.periodStr;
-      document.getElementById('periodId').innerText = info.periodStr;
+      document.getElementById("periodId").innerText = info.periodStr;
 
       if (activeBotId) renderActiveBotPage();
       else renderBotList();
     }
 
     setInterval(function() {
-      ['30s', '1m'].forEach(function(mode) {
+      var modes = ["30s", "1m"];
+      for (var m = 0; m < modes.length; m++) {
+        var mode = modes[m];
         var info = calculateDamanPeriodInfo(mode);
 
         if (activePeriods[mode] && activePeriods[mode] !== info.periodStr) {
@@ -504,50 +545,41 @@
         activePeriods[mode] = info.periodStr;
 
         if (mode === currentGameMode) {
-          document.getElementById('periodId').innerText = info.periodStr;
-          if (activeBotId) document.getElementById('detailPeriodNum').innerText = 'Period: ' + info.periodStr;
+          document.getElementById("periodId").innerText = info.periodStr;
+          if (activeBotId) document.getElementById("detailPeriodNum").innerText = "Period: " + info.periodStr;
 
-          var sStr = String(info.remainingSec).padStart(2, '0');
-          document.getElementById('t1').innerText = sStr[0];
-          document.getElementById('t2').innerText = sStr[1];
+          var sStr = String(info.remainingSec);
+          if (sStr.length < 2) sStr = "0" + sStr;
+          document.getElementById("t1").innerText = sStr[0];
+          document.getElementById("t2").innerText = sStr[1];
         }
-      });
+      }
     }, 1000);
 
-    initBotHistory('30s');
-    initBotHistory('1m');
+    initBotHistory("30s");
+    initBotHistory("1m");
 
-    var init30 = calculateDamanPeriodInfo('30s');
-    var init1m = calculateDamanPeriodInfo('1m');
-    activePeriods['30s'] = init30.periodStr;
-    activePeriods['1m'] = init1m.periodStr;
+    var init30 = calculateDamanPeriodInfo("30s");
+    var init1m = calculateDamanPeriodInfo("1m");
+    activePeriods["30s"] = init30.periodStr;
+    activePeriods["1m"] = init1m.periodStr;
 
-    document.getElementById('periodId').innerText = activePeriods['30s'];
+    document.getElementById("periodId").innerText = activePeriods["30s"];
     renderBotList();
   </script>
 </body>
 </html>
-￼Enter    var lastProcessedPeriod = { '30s': '', '1m': '' };
-
-    function getAccuracy(bot) {
-      if (bot.history.length === 0) return 100;
-      var wins = bot.history.filter(function(h) { return h.status === 'WIN'; }).length;
-      return Math.round((wins / bot.history.length) * 100);
-    }
-
-    function calculateDamanPeriodInfo(mode) {
-      var now = new Date();
-      var year = now.getFullYear();
-      var month = String(now.getMonth() + 1).padStart(2, '0');
-      var day = String(now.getDate()).padStart(2, '0');
-      var dateStr = year + month + day;
+￼Enter      var dateStr = String(year) + String(month) + String(day);
 
       var totalSec = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-      var interval = (mode === '30s') ? 30 : 60;
-      var typeCode = (mode === '30s') ? '1000' : '1001';
+      var interval = (mode === "30s") ? 30 : 60;
+      var typeCode = (mode === "30s") ? "1000" : "1001";
 
       var count = Math.floor(totalSec / interval) + 1;
-      var periodStr = dateStr + typeCode + String(count).padStart(4, '0');
+      var countStr = String(count);
+      while (countStr.length < 4) countStr = "0" + countStr;
+
+      var periodStr = dateStr + typeCode + countStr;
       var remainingSec = interval - (totalSec % interval);
 
       return { periodStr: periodStr, remainingSec: remainingSec };
@@ -557,50 +589,54 @@
       var info = calculateDamanPeriodInfo(mode);
       var baseNum = BigInt(info.periodStr);
 
-      botData[mode].forEach(function(bot) {
+      for (var b = 0; b < botData[mode].length; b++) {
+        var bot = botData[mode][b];
         bot.history = [];
         for (var i = 10; i >= 1; i--) {
           var num = Math.floor(Math.random() * 10);
-          var actualBS = num >= 5 ? 'BIG' : 'SMALL';
-          var predBS = (Math.random() > 0.3) ? actualBS : (actualBS === 'BIG' ? 'SMALL' : 'BIG');
+          var actualBS = (num >= 5) ? "BIG" : "SMALL";
+          var predBS = (Math.random() > 0.3) ? actualBS : (actualBS === "BIG" ? "SMALL" : "BIG");
 
           bot.history.push({
             period: (baseNum - BigInt(i)).toString(),
             prediction: predBS,
             result: actualBS + " (" + num + ")",
-            status: (predBS === actualBS) ? 'WIN' : 'LOSS'
+            status: (predBS === actualBS) ? "WIN" : "LOSS"
           });
         }
-        bot.nextPred = Math.random() > 0.5 ? 'BIG' : 'SMALL';
-      });
+        bot.nextPred = (Math.random() > 0.5) ? "BIG" : "SMALL";
+      }
     }
 
     function renderBotList() {
       var currentBots = botData[currentGameMode];
       currentBots.sort(function(a, b) { return getAccuracy(b) - getAccuracy(a); });
 
-      var container = document.getElementById('botListContainer');
-      container.innerHTML = '';
+      var container = document.getElementById("botListContainer");
+      container.innerHTML = "";
 
-      currentBots.forEach(function(bot, index) {
+      for (var index = 0; index < currentBots.length; index++) {
+        var bot = currentBots[index];
         var acc = getAccuracy(bot);
-        var rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
+        var rankClass = (index === 0) ? "rank-1" : (index === 1) ? "rank-2" : (index === 2) ? "rank-3" : "";
         
-        var dotsHTML = '';
-        bot.history.slice(-6).forEach(function(h) {
-          var dotClass = (h.status === 'WIN') ? 'dot-win' : 'dot-loss';
-          var dotSymbol = (h.status === 'WIN') ? '✓' : '✕';
+        var dotsHTML = "";
+        var lastHistory = bot.history.slice(-6);
+        for (var h = 0; h < lastHistory.length; h++) {
+          var item = lastHistory[h];
+          var dotClass = (item.status === "WIN") ? "dot-win" : "dot-loss";
+          var dotSymbol = (item.status === "WIN") ? "✓" : "✕";
           dotsHTML += '<div class="dot ' + dotClass + '">' + dotSymbol + '</div>';
-        });
+        }
 
-        var predBadgeClass = (bot.nextPred === 'BIG') ? 'card-pred-big' : 'card-pred-small';
+        var predBadgeClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
 
         var cardHTML = '<div class="bot-card" onclick="openBotPage(' + bot.id + ')">' +
             '<div class="bot-left">' +
               '<div class="rank-num ' + rankClass + '">' + (index + 1) + '</div>' +
               '<img class="bot-avatar" src="' + bot.avatar + '">' +
               '<div>' +
-          '<div><span class="bot-name">' + bot.name + '</span><span class="bot-acc-inline">' + acc + '%</span></div>' +
+                '<div><span class="bot-name">' + bot.name + '</span><span class="bot-acc-inline">' + acc + '%</span></div>' +
                 '<div class="history-dots">' + dotsHTML + '</div>' +
               '</div>' +
             '</div>' +
@@ -608,23 +644,22 @@
               '<span class="' + predBadgeClass + '">' + bot.nextPred + '</span>' +
             '</div>' +
           '</div>';
-
-        container.innerHTML += cardHTML;
-      });
+   container.innerHTML += cardHTML;
+      }
     }
 
     function openBotPage(id) {
       activeBotId = id;
-      document.getElementById('botListPage').style.display = 'none';
-      document.getElementById('botDetailPage').style.display = 'block';
+      document.getElementById("botListPage").style.display = "none";
+      document.getElementById("botDetailPage").style.display = "block";
       renderActiveBotPage();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function showListPage() {
       activeBotId = null;
-      document.getElementById('botDetailPage').style.display = 'none';
-      document.getElementById('botListPage').style.display = 'block';
+      document.getElementById("botDetailPage").style.display = "none";
+      document.getElementById("botListPage").style.display = "block";
       renderBotList();
     }
 
@@ -632,21 +667,29 @@
       if (!activeBotId) return;
 
       var currentBots = botData[currentGameMode];
-      var bot = currentBots.find(function(b) { return b.id === activeBotId; });
+      var bot = null;
+      for (var i = 0; i < currentBots.length; i++) {
+        if (currentBots[i].id === activeBotId) {
+          bot = currentBots[i];
+          break;
+        }
+      }
       if (!bot) return;
 
-      document.getElementById('activeBotName').innerText = bot.name;
-      document.getElementById('activeBotAvatar').src = bot.avatar;
-      document.getElementById('activeBotAcc').innerText = getAccuracy(bot) + '%';
-      document.getElementById('detailPeriodNum').innerText = 'Period: ' + activePeriods[currentGameMode];
+      document.getElementById("activeBotName").innerText = bot.name;
+      document.getElementById("activeBotAvatar").src = bot.avatar;
+      document.getElementById("activeBotAcc").innerText = getAccuracy(bot) + "%";
+      document.getElementById("detailPeriodNum").innerText = "Period: " + activePeriods[currentGameMode];
       
-      var predClass = (bot.nextPred === 'BIG') ? 'card-pred-big' : 'card-pred-small';
-      document.getElementById('detailPredBadge').innerHTML = '<span class="' + predClass + ' next-bet-badge">' + bot.nextPred + '</span>';
+      var predClass = (bot.nextPred === "BIG") ? "card-pred-big" : "card-pred-small";
+      document.getElementById("detailPredBadge").innerHTML = '<span class="' + predClass + ' next-bet-badge">' + bot.nextPred + '</span>';
 
-      var rowsHTML = '';
-      bot.history.slice().reverse().forEach(function(h) {
-        var statusBadge = (h.status === 'WIN') ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
-        var predBadge = (h.prediction === 'BIG') ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
+      var rowsHTML = "";
+      var reversedHistory = bot.history.slice().reverse();
+      for (var k = 0; k < reversedHistory.length; k++) {
+        var h = reversedHistory[k];
+        var statusBadge = (h.status === "WIN") ? '<span class="badge-win">✓ Win</span>' : '<span class="badge-loss">✕ Loss</span>';
+        var predBadge = (h.prediction === "BIG") ? '<span class="badge-big">BIG</span>' : '<span class="badge-small">SMALL</span>';
 
         rowsHTML += '<tr>' +
             '<td>' + h.period.slice(-6) + '</td>' +
@@ -654,9 +697,9 @@
             '<td><b>' + h.result + '</b></td>' +
             '<td>' + statusBadge + '</td>' +
           '</tr>';
-      });
+      }
 
-      document.getElementById('betsHistoryTable').innerHTML = rowsHTML;
+      document.getElementById("betsHistoryTable").innerHTML = rowsHTML;
     }
 
     function updatePredictionsOnPeriodChange(completedPeriod, mode) {
@@ -664,12 +707,14 @@
       lastProcessedPeriod[mode] = completedPeriod;
 
       var actualNumber = Math.floor(Math.random() * 10);
-      var actualBS = actualNumber >= 5 ? 'BIG' : 'SMALL';
+      var actualBS = (actualNumber >= 5) ? "BIG" : "SMALL";
 
-      botData[mode].forEach(function(bot) {
+      for (var i = 0; i < botData[mode].length; i++) {
+        var bot = botData[mode][i];
         var win = (bot.nextPred === actualBS);
         if (bot.history.length >= 10) bot.history.shift();
 
         bot.history.push({
           period: completedPeriod,
           prediction: bot.nextPred,
+          result: actualBS + " (" + actualNumber + ")",
