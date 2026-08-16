@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daman Prediction AI - Single Bot View</title>
+  <title>Daman Prediction AI - Updated Name & %</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #080d1a; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
 
-    /* Header */
+    /* App Header */
     .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e293b; margin-bottom: 12px; }
     .logo { font-weight: bold; font-size: 16px; color: #ffb703; }
     .login-btn { background: #ff2a55; padding: 5px 12px; border-radius: 20px; color: #fff; font-weight: bold; font-size: 12px; }
 
-    /* Game Tabs */
+    /* Game Mode Tabs */
     .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; background: #ffffff; padding: 6px; border-radius: 14px; }
     .tab { background: #f1f5f9; padding: 10px 2px; border-radius: 10px; text-align: center; font-size: 11px; color: #64748b; font-weight: 600; cursor: pointer; }
     .tab.active { background: #ff4d4d; color: #ffffff; box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3); }
     .tab.disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Banner */
+    /* Top Red Banner */
     .banner { background: #e63946; border-radius: 16px; padding: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .game-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
     .balls { display: flex; gap: 4px; }
@@ -30,11 +30,11 @@
     .t-box { background: #ffffff; color: #000; padding: 2px 5px; border-radius: 4px; }
     .period-id { font-size: 11px; margin-top: 6px; font-weight: 700; }
 
-    /* Section Cards */
+    /* Main Container Cards */
     .card-box { background: #131b2e; border: 1px solid #1e293b; border-radius: 16px; padding: 12px; margin-bottom: 15px; }
     .section-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #ffb703; }
 
-    /* Bot List View */
+    /* Bot List Component */
     .bot-list { display: flex; flex-direction: column; gap: 8px; }
     .bot-card { background: #1a243a; border: 1px solid #26334d; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .bot-left { display: flex; align-items: center; gap: 10px; }
@@ -44,23 +44,27 @@
     .rank-3 { background: #b45309; color: #fff; }
     .bot-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
     .bot-name { font-size: 13px; font-weight: 700; }
-    .bot-acc { font-size: 12px; color: #2ec4b6; font-weight: 700; margin-left: 5px; }
+    .bot-acc-inline { font-size: 13px; color: #2ec4b6; font-weight: 800; margin-left: 6px; }
     .history-dots { display: flex; gap: 3px; margin-top: 4px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; font-size: 7px; display: flex; align-items: center; justify-content: center; }
     .dot-win { background: #2ec4b6; color: #000; }
     .dot-loss { background: #e63946; color: #fff; }
 
-    .bot-pred-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+    .bot-pred-right { text-align: right; }
     .card-pred-big { background: #ff9f1c; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
     .card-pred-small { background: #2ec4b6; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
 
-    /* Single Bot Detailed Page View */
+    /* Single Bot Screen View */
     #botDetailPage { display: none; }
-    .back-btn { background: #2b374e; color: #ffb703; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 12px; }
-    .single-pred-box { background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #ffb703; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; }
+    .back-btn { background: #2b374e; color: #ffb703; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+    
+    .next-bet-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #ffb703; border-radius: 12px; padding: 15px; text-align: center; margin: 12px 0 18px 0; }
+    .next-bet-title { font-size: 11px; color: #94a3b8; font-weight: bold; }
+    .next-bet-period { font-size: 13px; font-weight: bold; margin-top: 4px; color: #ffb703; }
+    .next-bet-badge { margin-top: 8px; font-size: 22px; font-weight: 900; padding: 6px 28px; border-radius: 8px; display: inline-block; }
 
-    /* Table */
-    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    /* History Table */
+    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
     .bets-table th { text-align: left; color: #64748b; padding: 6px 2px; }
     .bets-table td { padding: 8px 2px; border-top: 1px solid #1e293b; }
     .badge-big { background: #ff9f1c; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
@@ -71,13 +75,13 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- App Header -->
   <div class="top-bar">
     <div class="logo">👑 DAMAN PREDICTION</div>
     <div class="login-btn">Login</div>
   </div>
 
-  <!-- Game Tabs -->
+  <!-- Game Mode Tabs -->
   <div class="game-tabs">
     <div class="tab active" id="tab30s" onclick="switchGameMode('30s')"><span style="display:block;">⏱️</span>WinGo 30s</div>
     <div class="tab" id="tab1m" onclick="switchGameMode('1m')"><span style="display:block;">⏱️</span>WinGo 1m</div>
@@ -85,7 +89,7 @@
     <div class="tab disabled" onclick="alert('5 Min Mode Disabled')"><span style="display:block;">🔒</span>WinGo 5m</div>
   </div>
 
-  <!-- Banner -->
+  <!-- Game Status Red Banner -->
   <div class="banner">
     <div>
       <div class="game-name" id="bannerGameTitle">WinGo 30sec</div>
@@ -100,46 +104,57 @@
     </div>
   </div>
 
-  <!-- VIEW 1: All Bots List Page -->
+  <!-- PAGE 1: All Bots Ranking View -->
   <div class="card-box" id="botListPage">
     <div class="section-title">🏆 Select Bot to Open Prediction Page</div>
     <div class="bot-list" id="botListContainer"></div>
   </div>
 
-  <!-- VIEW 2: Dedicated Bot Prediction Page -->
+  <!-- PAGE 2: Clean Single Bot View -->
   <div class="card-box" id="botDetailPage">
     <button class="back-btn" onclick="showListPage()">← Back to All Bots</button>
     
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-      <img id="activeBotAvatar" src="" style="width:45px; height:45px; border-radius:50%; border:2px solid #ffb703;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <img id="activeBotAvatar" src="" style="width:48px; height:48px; border-radius:50%; border:2px solid #ffb703;">
       <div>
-        <div style="font-size:16px; font-weight:700;" id="activeBotName">Bot Name</div>
-        <div style="font-size:12px; color:#2ec4b6; font-weight:700;" id="activeBotAcc">100% Accuracy</div>
+        <!-- Name ke Aage % Show hoga -->
+        <div style="font-size:16px; font-weight:700;">
+          <span id="activeBotName">Bot Name</span> 
+          <span id="activeBotAcc" style="color:#2ec4b6; font-size:15px; margin-left:6px;">80%</span>
+        </div>
       </div>
     </div>
 
+    <!-- Upcoming Next Prediction Box -->
+    <div class="next-bet-card">
+      <div class="next-bet-title">NEXT PERIOD PREDICTION</div>
+      <div class="next-bet-period" id="detailPeriodNum">Period: Loading...</div>
+      <div id="detailPredBadge">--</div>
+    </div>
+
+    <!-- History Table (Last 10 Bets) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daman Prediction AI - Single Bot View</title>
+  <title>Daman Prediction AI - Updated Name & %</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #080d1a; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
 
-    /* Header */
+    /* App Header */
     .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e293b; margin-bottom: 12px; }
     .logo { font-weight: bold; font-size: 16px; color: #ffb703; }
     .login-btn { background: #ff2a55; padding: 5px 12px; border-radius: 20px; color: #fff; font-weight: bold; font-size: 12px; }
 
-    /* Game Tabs */
+    /* Game Mode Tabs */
     .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; background: #ffffff; padding: 6px; border-radius: 14px; }
     .tab { background: #f1f5f9; padding: 10px 2px; border-radius: 10px; text-align: center; font-size: 11px; color: #64748b; font-weight: 600; cursor: pointer; }
     .tab.active { background: #ff4d4d; color: #ffffff; box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3); }
     .tab.disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Banner */
+    /* Top Red Banner */
     .banner { background: #e63946; border-radius: 16px; padding: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .game-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
     .balls { display: flex; gap: 4px; }
@@ -150,11 +165,11 @@
     .t-box { background: #ffffff; color: #000; padding: 2px 5px; border-radius: 4px; }
     .period-id { font-size: 11px; margin-top: 6px; font-weight: 700; }
 
-    /* Section Cards */
+    /* Main Container Cards */
     .card-box { background: #131b2e; border: 1px solid #1e293b; border-radius: 16px; padding: 12px; margin-bottom: 15px; }
     .section-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #ffb703; }
 
-    /* Bot List View */
+    /* Bot List Component */
     .bot-list { display: flex; flex-direction: column; gap: 8px; }
     .bot-card { background: #1a243a; border: 1px solid #26334d; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .bot-left { display: flex; align-items: center; gap: 10px; }
@@ -164,23 +179,27 @@
     .rank-3 { background: #b45309; color: #fff; }
     .bot-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
     .bot-name { font-size: 13px; font-weight: 700; }
-    .bot-acc { font-size: 12px; color: #2ec4b6; font-weight: 700; margin-left: 5px; }
+    .bot-acc-inline { font-size: 13px; color: #2ec4b6; font-weight: 800; margin-left: 6px; }
     .history-dots { display: flex; gap: 3px; margin-top: 4px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; font-size: 7px; display: flex; align-items: center; justify-content: center; }
     .dot-win { background: #2ec4b6; color: #000; }
     .dot-loss { background: #e63946; color: #fff; }
 
-    .bot-pred-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+    .bot-pred-right { text-align: right; }
     .card-pred-big { background: #ff9f1c; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
     .card-pred-small { background: #2ec4b6; color: #000; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; }
 
-    /* Single Bot Detailed Page View */
+    /* Single Bot Screen View */
     #botDetailPage { display: none; }
-    .back-btn { background: #2b374e; color: #ffb703; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 12px; }
-    .single-pred-box { background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #ffb703; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; }
+    .back-btn { background: #2b374e; color: #ffb703; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+    
+    .next-bet-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #ffb703; border-radius: 12px; padding: 15px; text-align: center; margin: 12px 0 18px 0; }
+    .next-bet-title { font-size: 11px; color: #94a3b8; font-weight: bold; }
+    .next-bet-period { font-size: 13px; font-weight: bold; margin-top: 4px; color: #ffb703; }
+    .next-bet-badge { margin-top: 8px; font-size: 22px; font-weight: 900; padding: 6px 28px; border-radius: 8px; display: inline-block; }
 
-    /* Table */
-    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    /* History Table */
+    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
     .bets-table th { text-align: left; color: #64748b; padding: 6px 2px; }
     .bets-table td { padding: 8px 2px; border-top: 1px solid #1e293b; }
     .badge-big { background: #ff9f1c; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
@@ -191,13 +210,13 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- App Header -->
   <div class="top-bar">
     <div class="logo">👑 DAMAN PREDICTION</div>
     <div class="login-btn">Login</div>
   </div>
 
-  <!-- Game Tabs -->
+  <!-- Game Mode Tabs -->
   <div class="game-tabs">
     <div class="tab active" id="tab30s" onclick="switchGameMode('30s')"><span style="display:block;">⏱️</span>WinGo 30s</div>
     <div class="tab" id="tab1m" onclick="switchGameMode('1m')"><span style="display:block;">⏱️</span>WinGo 1m</div>
@@ -205,7 +224,7 @@
     <div class="tab disabled" onclick="alert('5 Min Mode Disabled')"><span style="display:block;">🔒</span>WinGo 5m</div>
   </div>
 
-  <!-- Banner -->
+  <!-- Game Status Red Banner -->
   <div class="banner">
     <div>
       <div class="game-name" id="bannerGameTitle">WinGo 30sec</div>
@@ -220,32 +239,36 @@
     </div>
   </div>
 
-  <!-- VIEW 1: All Bots List Page -->
+  <!-- PAGE 1: All Bots Ranking View -->
   <div class="card-box" id="botListPage">
     <div class="section-title">🏆 Select Bot to Open Prediction Page</div>
     <div class="bot-list" id="botListContainer"></div>
   </div>
 
-  <!-- VIEW 2: Dedicated Bot Prediction Page -->
+  <!-- PAGE 2: Clean Single Bot View -->
   <div class="card-box" id="botDetailPage">
     <button class="back-btn" onclick="showListPage()">← Back to All Bots</button>
     
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-      <img id="activeBotAvatar" src="" style="width:45px; height:45px; border-radius:50%; border:2px solid #ffb703;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <img id="activeBotAvatar" src="" style="width:48px; height:48px; border-radius:50%; border:2px solid #ffb703;">
       <div>
-        <div style="font-size:16px; font-weight:700;" id="activeBotName">Bot Name</div>
-        <div style="font-size:12px; color:#2ec4b6; font-weight:700;" id="activeBotAcc">100% Accuracy</div>
+        <!-- Name ke Aage % Show hoga -->
+        <div style="font-size:16px; font-weight:700;">
+          <span id="activeBotName">Bot Name</span> 
+          <span id="activeBotAcc" style="color:#2ec4b6; font-size:15px; margin-left:6px;">80%</span>
+        </div>
       </div>
     </div>
 
-    <!-- Live Prediction Display Box -->
-    <div class="single-pred-box">
-      <div style="font-size:11px; color:#94a3b8;">CURRENT PERIOD PREDICTION</div>
-      <div style="font-size:13px; font-weight:bold; margin-top:3px; color:#ffb703;" id="detailPeriodNum">Period: --</div>
-      <div id="detailPredBadge" style="margin-top:8px;">--</div>
+    <!-- Upcoming Next Prediction Box -->
+    <div class="next-bet-card">
+      <div class="next-bet-title">NEXT PERIOD PREDICTION</div>
+      <div class="next-bet-period" id="detailPeriodNum">Period: Loading...</div>
+      <div id="detailPredBadge">--</div>
     </div>
 
-    <div style="font-size:12px; font-weight:700; margin-bottom:6px;">Last 10 Bets History</div>
+    <!-- History Table (Last 10 Bets) -->
+    <div style="font-size:12px; font-weight:700;">Last 10 Bets History</div>
     <table class="bets-table">
       <thead>
         <tr>
@@ -260,8 +283,12 @@
   </div>
 
 <script>
+  const API_URL = "https://api.wingobot.com/v2/30-sec-game-history";
+  const TOKEN = "ws_64febebc8e74a5154ebb1d72a30ea4397265d56772b0ec5119b160d7286b0182";
+
   let currentGameMode = '30s';
   let activeBotId = null;
+  let livePeriodNumber = "";
 
   function createInitialBots() {
     return [
@@ -278,11 +305,7 @@
     ];
   }
 
-  let botData = {
-    '30s': createInitialBots(),
-    '1m': createInitialBots()
-  };
-
+  let botData = { '30s': createInitialBots(), '1m': createInitialBots() };
   let lastProcessedPeriod = { '30s': '', '1m': '' };
 
   function getAccuracy(bot) {
@@ -293,7 +316,7 @@
 
   function initBotHistory(mode) {
     let now = new Date();
-    let basePeriod = BigInt(now.getFullYear().toString() + (now.getMonth()+1).toString().padStart(2,'0') + now.getDate().toString().padStart(2,'0') + "10005000");
+    let basePeriod = BigInt("20260816100052200");
 
     botData[mode].forEach(bot => {
       bot.history = [];
@@ -332,7 +355,7 @@
             <div class="rank-num ${rankClass}">${index + 1}</div>
             <img class="bot-avatar" src="${bot.avatar}">
             <div>
-              <div><span class="bot-name">${bot.name}</span><span class="bot-acc">${acc}%</span></div>
+              <div><span class="bot-name">${bot.name}</span><span class="bot-acc-inline">${acc}%</span></div>
               <div class="history-dots">${dotsHTML}</div>
             </div>
           </div>
@@ -344,7 +367,6 @@
     });
   }
 
-  // Open Selected Bot Page
   function openBotPage(id) {
     activeBotId = id;
     document.getElementById('botListPage').style.display = 'none';
@@ -353,7 +375,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Back to All Bots List
   function showListPage() {
     activeBotId = null;
     document.getElementById('botDetailPage').style.display = 'none';
@@ -370,13 +391,12 @@
 
     document.getElementById('activeBotName').innerText = bot.name;
     document.getElementById('activeBotAvatar').src = bot.avatar;
-    document.getElementById('activeBotAcc').innerText = `${getAccuracy(bot)}% Accuracy`;
+    document.getElementById('activeBotAcc').innerText = `${getAccuracy(bot)}%`;
 
-    let currentPeriod = document.getElementById('periodId').innerText;
-    document.getElementById('detailPeriodNum').innerText = `Period: ${currentPeriod}`;
+    document.getElementById('detailPeriodNum').innerText = `Period: ${livePeriodNumber || 'Loading...'}`;
     
-    let predBadgeClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
-    document.getElementById('detailPredBadge').innerHTML = `<span class="${predBadgeClass}" style="font-size:20px; padding:6px 24px;">${bot.nextPred}</span>`;
+    let predClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
+    document.getElementById('detailPredBadge').innerHTML = `<span class="${predClass} next-bet-badge">${bot.nextPred}</span>`;
 
     let rowsHTML = '';
     [...bot.history].reverse().forEach(h => {
@@ -441,51 +461,54 @@
     else renderBotList();
   }
 
+  async function syncDamanApiData() {
+    try {
+      const response = await fetch(API_URL, { headers: { "Authorization": `Bearer ${TOKEN}` } });
+      const data = await response.json();
+
+      if (data.success && data.history && data.history.length > 0) {
+        let latestRow = data.history[0];
+        livePeriodNumber = (BigInt(latestRow.issueNumber) + 1n).toString();
+
+        document.getElementById('periodId').innerText = livePeriodNumber;
+        if (activeBotId) document.getElementById('detailPeriodNum').innerText = `Period: ${livePeriodNumber}`;
+
+        let ballsHTML = '';
+        data.history.slice(0, 5).forEach(row => {
+          let bg = row.colour === 'green' ? 'ball-green' : 'ball-red';
+          ballsHTML += `<div class="ball ${bg}">${row.number}</div>`;
+        });
+        document.getElementById('recentBalls').innerHTML = ballsHTML;
+
+        evaluateAndGenerateNewBets(latestRow.issueNumber, parseInt(latestRow.number), '30s');
+      }
+    } catch (e) {}
+  }
+
+  // Timer loop
   setInterval(() => {
     let now = new Date();
     let seconds = now.getSeconds();
-    let millis = now.getMilliseconds();
-
     let targetDuration = currentGameMode === '30s' ? 30 : 60;
     let remainingSec = targetDuration - (seconds % targetDuration);
-
-    let year = now.getFullYear();
-    let month = String(now.getMonth() + 1).padStart(2, '0');
-    let day = String(now.getDate()).padStart(2, '0');
-    let totalSecToday = (now.getHours() * 3600) + (now.getMinutes() * 60) + seconds;
-    let periodCount = Math.floor(totalSecToday / targetDuration) + 1;
-    let formattedPeriod = `${year}${month}${day}1000${String(periodCount).padStart(4, '0')}`;
-
-    document.getElementById('periodId').innerText = formattedPeriod;
-    if (activeBotId) document.getElementById('detailPeriodNum').innerText = `Period: ${formattedPeriod}`;
 
     let sStr = String(remainingSec).padStart(2, '0');
     document.getElementById('t1').innerText = sStr[0];
     document.getElementById('t2').innerText = sStr[1];
 
-    if (remainingSec === targetDuration && millis < 200) {
-      let randNum = Math.floor(Math.random() * 10);
-      evaluateAndGenerateNewBets(formattedPeriod, randNum, currentGameMode);
-
-      let ballsHTML = `<div class="ball ${randNum >= 5 ? 'ball-green':'ball-red'}">${randNum}</div>`;
-      document.getElementById('recentBalls').innerHTML = ballsHTML;
+    if (remainingSec === targetDuration) {
+      syncDamanApiData();
     }
   }, 1000);
 
   initBotHistory('30s');
   initBotHistory('1m');
   renderBotList();
+  syncDamanApiData();
 </script>
 </body>
 </html>
-￼Enter    <!-- Live Prediction Display Box -->
-    <div class="single-pred-box">
-      <div style="font-size:11px; color:#94a3b8;">CURRENT PERIOD PREDICTION</div>
-      <div style="font-size:13px; font-weight:bold; margin-top:3px; color:#ffb703;" id="detailPeriodNum">Period: --</div>
-      <div id="detailPredBadge" style="margin-top:8px;">--</div>
-    </div>
-
-    <div style="font-size:12px; font-weight:700; margin-bottom:6px;">Last 10 Bets History</div>
+￼Enter    <div style="font-size:12px; font-weight:700;">Last 10 Bets History</div>
     <table class="bets-table">
       <thead>
         <tr>
@@ -500,8 +523,12 @@
   </div>
 
 <script>
+  const API_URL = "https://api.wingobot.com/v2/30-sec-game-history";
+  const TOKEN = "ws_64febebc8e74a5154ebb1d72a30ea4397265d56772b0ec5119b160d7286b0182";
+
   let currentGameMode = '30s';
   let activeBotId = null;
+  let livePeriodNumber = "";
 
   function createInitialBots() {
     return [
@@ -518,11 +545,7 @@
     ];
   }
 
-  let botData = {
-    '30s': createInitialBots(),
-    '1m': createInitialBots()
-  };
-
+  let botData = { '30s': createInitialBots(), '1m': createInitialBots() };
   let lastProcessedPeriod = { '30s': '', '1m': '' };
 
   function getAccuracy(bot) {
@@ -533,7 +556,7 @@
 
   function initBotHistory(mode) {
     let now = new Date();
-    let basePeriod = BigInt(now.getFullYear().toString() + (now.getMonth()+1).toString().padStart(2,'0') + now.getDate().toString().padStart(2,'0') + "10005000");
+    let basePeriod = BigInt("20260816100052200");
 
     botData[mode].forEach(bot => {
       bot.history = [];
@@ -558,21 +581,20 @@
     currentBots.sort((a, b) => getAccuracy(b) - getAccuracy(a));
 
     const container = document.getElementById('botListContainer');
-ntainer.innerHTML = '';
+    container.innerHTML = '';
 
     currentBots.forEach((bot, index) => {
       let acc = getAccuracy(bot);
       let rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
       let dotsHTML = bot.history.slice(-6).map(h => `<div class="dot ${h.status === 'WIN' ? 'dot-win' : 'dot-loss'}">${h.status === 'WIN' ? '✓' : '✕'}</div>`).join('');
       let predBadgeClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
-
-      container.innerHTML += `
+ container.innerHTML += `
         <div class="bot-card" onclick="openBotPage(${bot.id})">
           <div class="bot-left">
             <div class="rank-num ${rankClass}">${index + 1}</div>
             <img class="bot-avatar" src="${bot.avatar}">
             <div>
-              <div><span class="bot-name">${bot.name}</span><span class="bot-acc">${acc}%</span></div>
+              <div><span class="bot-name">${bot.name}</span><span class="bot-acc-inline">${acc}%</span></div>
               <div class="history-dots">${dotsHTML}</div>
             </div>
           </div>
@@ -584,7 +606,6 @@ ntainer.innerHTML = '';
     });
   }
 
-  // Open Selected Bot Page
   function openBotPage(id) {
     activeBotId = id;
     document.getElementById('botListPage').style.display = 'none';
@@ -593,7 +614,6 @@ ntainer.innerHTML = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Back to All Bots List
   function showListPage() {
     activeBotId = null;
     document.getElementById('botDetailPage').style.display = 'none';
@@ -610,13 +630,12 @@ ntainer.innerHTML = '';
 
     document.getElementById('activeBotName').innerText = bot.name;
     document.getElementById('activeBotAvatar').src = bot.avatar;
-    document.getElementById('activeBotAcc').innerText = `${getAccuracy(bot)}% Accuracy`;
+    document.getElementById('activeBotAcc').innerText = `${getAccuracy(bot)}%`;
 
-    let currentPeriod = document.getElementById('periodId').innerText;
-    document.getElementById('detailPeriodNum').innerText = `Period: ${currentPeriod}`;
+    document.getElementById('detailPeriodNum').innerText = `Period: ${livePeriodNumber || 'Loading...'}`;
     
-    let predBadgeClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
-    document.getElementById('detailPredBadge').innerHTML = `<span class="${predBadgeClass}" style="font-size:20px; padding:6px 24px;">${bot.nextPred}</span>`;
+    let predClass = bot.nextPred === 'BIG' ? 'card-pred-big' : 'card-pred-small';
+    document.getElementById('detailPredBadge').innerHTML = `<span class="${predClass} next-bet-badge">${bot.nextPred}</span>`;
 
     let rowsHTML = '';
     [...bot.history].reverse().forEach(h => {
@@ -638,3 +657,13 @@ ntainer.innerHTML = '';
 
   function evaluateAndGenerateNewBets(periodNum, actualNumber, mode) {
     if (lastProcessedPeriod[mode] === periodNum) return;
+    lastProcessedPeriod[mode] = periodNum;
+
+    let actualBS = actualNumber >= 5 ? 'BIG' : 'SMALL';
+
+    botData[mode].forEach(bot => {
+      let win = (bot.nextPred === actualBS);
+      if (bot.history.length >= 10) bot.history.shift();
+
+      bot.history.push({
+        period: periodNum,
