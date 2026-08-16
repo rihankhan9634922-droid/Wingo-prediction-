@@ -3,791 +3,561 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Daman Prediction AI</title>
+<title>Daman Prediction</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,Helvetica,sans-serif;
-}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 
 body{
-  background:#080d1a;
-  color:#fff;
-  max-width:600px;
-  margin:auto;
-  padding:10px;
+ background:#080d1a;
+ color:#fff;
+ max-width:600px;
+ margin:auto;
+ padding:12px;
 }
 
-/* TOP */
-.top-bar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid #1e293b;
-  margin-bottom:12px;
+.header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:12px 0;
+ border-bottom:1px solid #26334d;
+ margin-bottom:12px;
 }
 
 .logo{
-  color:#ffb703;
-  font-size:16px;
-  font-weight:bold;
+ color:#ffb703;
+ font-weight:800;
+ font-size:17px;
 }
 
 .login{
-  background:#ff2a55;
-  padding:7px 14px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:bold;
+ background:#ff2a55;
+ padding:9px 17px;
+ border-radius:22px;
+ font-weight:bold;
 }
 
-/* TABS */
-.game-tabs{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:6px;
-  background:#fff;
-  padding:6px;
-  border-radius:14px;
-  margin-bottom:12px;
+.tabs{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:6px;
+ background:#fff;
+ padding:6px;
+ border-radius:15px;
+ margin-bottom:12px;
 }
 
 .tab{
-  background:#f1f5f9;
-  color:#64748b;
-  padding:9px 2px;
-  border-radius:10px;
-  text-align:center;
-  font-size:11px;
-  font-weight:bold;
-  cursor:pointer;
+ background:#eef2f7;
+ color:#64748b;
+ padding:11px 2px;
+ text-align:center;
+ border-radius:10px;
+ font-size:11px;
+ font-weight:bold;
 }
 
 .tab.active{
-  background:#ff4d4d;
-  color:#fff;
+ background:#ff4d4d;
+ color:#fff;
 }
 
 .tab.disabled{
-  opacity:.45;
-  cursor:not-allowed;
+ opacity:.45;
 }
 
-/* BANNER */
 .banner{
-  background:#e63946;
-  border-radius:16px;
-  padding:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
+ background:#e63946;
+ border-radius:17px;
+ padding:16px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px;
 }
 
-.game-name{
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:7px;
+.game-title{
+ font-size:16px;
+ font-weight:800;
 }
 
 .balls{
-  display:flex;
-  gap:4px;
+ display:flex;
+ gap:5px;
+ margin-top:8px;
 }
 
 .ball{
-  width:23px;
-  height:23px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:10px;
-  font-weight:bold;
+ width:29px;
+ height:29px;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:bold;
 }
 
-.ball-red{
-  background:#ff4d4d;
-}
-
-.ball-green{
-  background:#2ec4b6;
-}
+.ball-red{background:#ff4d4d}
+.ball-green{background:#2ec4b6}
 
 .timer{
-  text-align:right;
+ text-align:right;
+ font-size:11px;
 }
 
-.timer-title{
-  font-size:10px;
-  opacity:.8;
+.time-box{
+ display:inline-block;
+ background:#fff;
+ color:#000;
+ padding:4px 7px;
+ border-radius:5px;
+ font-size:19px;
+ font-weight:800;
+ margin-top:4px;
 }
 
-.timer-boxes{
-  display:flex;
-  gap:3px;
-  align-items:center;
-  font-size:18px;
-  font-weight:900;
+.period{
+ font-size:11px;
+ font-weight:800;
+ margin-top:7px;
+ white-space:nowrap;
 }
 
-.t-box{
-  background:#fff;
-  color:#000;
-  padding:3px 5px;
-  border-radius:4px;
+.error{
+ color:#ff7777;
+ text-align:center;
+ font-size:12px;
+ margin:8px 0;
 }
 
-.period-id{
-  font-size:10px;
-  font-weight:bold;
-  margin-top:6px;
-  max-width:190px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.api-error{
-  color:#ffe0e0;
-  font-size:9px;
-  margin-top:3px;
-}
-
-/* CARD */
 .card{
-  background:#131b2e;
-  border:1px solid #1e293b;
-  border-radius:16px;
-  padding:12px;
-  margin-bottom:15px;
+ background:#131b2e;
+ border:1px solid #26334d;
+ border-radius:17px;
+ padding:13px;
+ margin-bottom:15px;
 }
 
-.section-title{
-  color:#ffb703;
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:10px;
+.heading{
+ color:#ffb703;
+ font-size:15px;
+ font-weight:800;
+ margin-bottom:12px;
 }
 
-/* BOTS */
-.bot-list{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.bot-card{
-  background:#1a243a;
-  border:1px solid #26334d;
-  border-radius:12px;
-  padding:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  cursor:pointer;
+.bot{
+ background:#1a243a;
+ border:1px solid #26334d;
+ border-radius:13px;
+ padding:11px;
+ margin:9px 0;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ cursor:pointer;
 }
 
 .bot-left{
-  display:flex;
-  align-items:center;
-  gap:9px;
+ display:flex;
+ align-items:center;
+ gap:9px;
 }
 
 .rank{
-  width:21px;
-  height:21px;
-  border-radius:50%;
-  background:#2b374e;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:10px;
-  font-weight:bold;
+ width:27px;
+ height:27px;
+ border-radius:50%;
+ background:#2b374e;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:bold;
 }
 
-.rank1{
-  background:#ffb703;
-  color:#000;
-}
+.rank1{background:#ffb703;color:#000}
+.rank2{background:#cbd5e1;color:#000}
+.rank3{background:#b45309}
 
-.rank2{
-  background:#cbd5e1;
-  color:#000;
-}
-
-.rank3{
-  background:#b45309;
-}
-
-.bot-avatar{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  object-fit:cover;
-  border:1px solid #ffb703;
+.avatar{
+ width:47px;
+ height:47px;
+ border-radius:50%;
+ object-fit:cover;
+ border:2px solid #ffb703;
 }
 
 .bot-name{
-  font-size:13px;
-  font-weight:bold;
+ font-size:15px;
+ font-weight:800;
 }
 
-.bot-acc{
-  color:#2ec4b6;
-  font-size:13px;
-  font-weight:bold;
-  margin-left:6px;
+.acc{
+ color:#2ec4b6;
+ font-size:15px;
+ font-weight:800;
+ margin-left:5px;
 }
 
-.history-dots{
-  display:flex;
-  gap:3px;
-  margin-top:4px;
+.dots{
+ display:flex;
+ gap:3px;
+ margin-top:5px;
 }
 
 .dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:7px;
+ width:13px;
+ height:13px;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:8px;
+ font-weight:bold;
 }
 
-.dot-win{
-  background:#2ec4b6;
-  color:#000;
+.win-dot{
+ background:#2ec4b6;
+ color:#000;
 }
 
-.dot-loss{
-  background:#e63946;
-  color:#fff;
+.loss-dot{
+ background:#e63946;
+ color:#fff;
 }
 
 .pred{
-  padding:5px 10px;
-  border-radius:6px;
-  font-size:12px;
-  font-weight:900;
+ padding:8px 12px;
+ border-radius:7px;
+ font-weight:800;
+ font-size:13px;
 }
 
-.pred-big{
-  background:#ff9f1c;
-  color:#000;
+.big{
+ background:#ff9f1c;
+ color:#000;
 }
 
-.pred-small{
-  background:#2ec4b6;
-  color:#000;
+.small{
+ background:#2ec4b6;
+ color:#000;
 }
 
-/* DETAIL */
-#botDetailPage{
-  display:none;
+#detailPage{
+ display:none;
 }
 
-.back-btn{
-  background:#2b374e;
-  color:#ffb703;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  font-size:12px;
-  font-weight:bold;
-  cursor:pointer;
-  margin-bottom:15px;
+.back{
+ background:#2b374e;
+ color:#ffb703;
+ border:0;
+ padding:10px 15px;
+ border-radius:9px;
+ font-weight:bold;
+ cursor:pointer;
 }
 
-.profile{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.profile-avatar{
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  border:2px solid #ffb703;
-  object-fit:cover;
+.bot-profile{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin-top:16px;
 }
 
 .profile-name{
-  font-size:16px;
-  font-weight:bold;
+ font-size:19px;
+ font-weight:800;
 }
 
-.profile-acc{
-  color:#2ec4b6;
-  font-size:15px;
-  margin-left:6px;
-  font-weight:bold;
-}
-
-/* NEXT */
-.next-bet{
-  background:linear-gradient(135deg,#1e293b,#0f172a);
-  border:2px solid #ffb703;
-  border-radius:13px;
-  padding:15px;
-  text-align:center;
-  margin:17px 0;
+.next{
+ border:2px solid #ffb703;
+ border-radius:15px;
+ padding:18px;
+ text-align:center;
+ margin-top:17px;
+ background:linear-gradient(135deg,#1e293b,#0f172a);
 }
 
 .next-title{
-  font-size:11px;
-  color:#94a3b8;
-  font-weight:bold;
+ color:#94a3b8;
+ font-size:12px;
+ font-weight:bold;
 }
 
 .next-period{
-  color:#ffb703;
-  font-size:13px;
-  font-weight:bold;
-  margin:6px 0 10px;
+ color:#ffb703;
+ font-weight:800;
+ margin-top:6px;
 }
 
 .next-badge{
-  display:inline-block;
-  padding:8px 30px;
-  border-radius:8px;
-  font-size:23px;
-  font-weight:900;
+ display:inline-block;
+ margin-top:11px;
+ padding:10px 35px;
+ border-radius:9px;
+ font-size:23px;
+ font-weight:900;
 }
 
-/* TABLE */
 .history-title{
-  font-size:13px;
-  font-weight:bold;
-  margin-bottom:8px;
+ margin-top:18px;
+ font-size:13px;
+ font-weight:bold;
 }
 
-.bets-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:10px;
+table{
+ width:100%;
+ border-collapse:collapse;
+ margin-top:10px;
+ font-size:11px;
 }
 
-.bets-table th{
-  color:#64748b;
-  text-align:left;
-  padding:7px 2px;
+th{
+ color:#64748b;
+ text-align:left;
+ padding:7px 2px;
 }
 
-.bets-table td{
-  padding:8px 2px;
-  border-top:1px solid #1e293b;
+td{
+ padding:8px 2px;
+ border-top:1px solid #26334d;
 }
 
-.badge-big{
-  background:#ff9f1c;
-  color:#000;
-  padding:3px 6px;
-  border-radius:4px;
-  font-weight:bold;
+.status-win{
+ color:#2ec4b6;
+ font-weight:bold;
 }
 
-.badge-small{
-  background:#2ec4b6;
-  color:#000;
-  padding:3px 6px;
-  border-radius:4px;
-  font-weight:bold;
+.status-loss{
+ color:#e63946;
+ font-weight:bold;
 }
 
-.win-text{
-  color:#2ec4b6;
-  font-weight:bold;
-}
-
-.loss-text{
-  color:#e63946;
-  font-weight:bold;
+.loading{
+ text-align:center;
+ color:#94a3b8;
+ padding:15px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- MAIN PAGE -->
-<div id="mainPage">
+<div class="header">
+ <div class="logo">👑 DAMAN PREDICTION</div>
+ <div class="login">Login</div>
+</div>
 
-  <div class="top-bar">
-    <div class="logo">👑 DAMAN PREDICTION</div>
-    <div class="login">Login</div>
+<div class="tabs">
+ <div class="tab active">⏱️<br>WinGo 30s</div>
+ <div class="tab">⏱️<br>WinGo 1m</div>
+ <div class="tab disabled">🔒<br>WinGo 3m</div>
+ <div class="tab disabled">🔒<br>WinGo 5m</div>
+</div>
+
+<div class="banner">
+
+ <div>
+  <div class="game-title">WinGo 30sec</div>
+  <div class="balls" id="balls"></div>
+ </div>
+
+ <div class="timer">
+  <div>Time remaining</div>
+
+  <span class="time-box">0</span>
+  <span class="time-box">0</span> :
+  <span class="time-box" id="s1">-</span>
+  <span class="time-box" id="s2">-</span>
+
+  <div class="period" id="period">
+   Connecting...
   </div>
-
-  <div class="game-tabs">
-
-    <div class="tab active"
-         id="tab30s"
-         onclick="switchGameMode('30s')">
-      ⏱️<br>WinGo 30s
-    </div>
-
-    <div class="tab"
-         id="tab1m"
-         onclick="switchGameMode('1m')">
-      ⏱️<br>WinGo 1m
-    </div>
-
-    <div class="tab disabled">
-      🔒<br>WinGo 3m
-    </div>
-
-    <div class="tab disabled">
-      🔒<br>WinGo 5m
-    </div>
-
-  </div>
-
-  <div class="banner">
-
-    <div>
-      <div class="game-name" id="bannerGameTitle">
-        WinGo 30sec
-      </div>
-
-      <div class="balls" id="recentBalls"></div>
-    </div>
-
-    <div class="timer">
-
-      <div class="timer-title">
-        Time remaining
-      </div>
-
-      <div class="timer-boxes">
-        <span class="t-box">0</span>
-        <span class="t-box">0</span>
-        :
-        <span class="t-box" id="t1">0</span>
-        <span class="t-box" id="t2">0</span>
-      </div>
-
-      <div class="period-id" id="periodId">
-        Loading...
-      </div>
-
-      <div class="api-error" id="apiError"></div>
-
-    </div>
-
-  </div>
-
-
-  <!-- BOT LIST -->
-  <div class="card" id="botListPage">
-
-    <div class="section-title">
-      🏆 Select Bot to Open Prediction Page
-    </div>
-
-    <div class="bot-list" id="botListContainer"></div>
-
-  </div>
+ </div>
 
 </div>
 
+<div id="error" class="error"></div>
 
-<!-- BOT DETAIL ONLY -->
-<div class="card" id="botDetailPage">
+<!-- BOT LIST -->
+<div class="card" id="listPage">
 
-  <button class="back-btn" onclick="showListPage()">
-    ← Back to All Bots
-  </button>
+ <div class="heading">
+  🏆 Select Bot to Open Prediction Page
+ </div>
 
-  <div class="profile">
+ <div id="bots"></div>
 
-    <img id="activeBotAvatar"
-         class="profile-avatar"
-         src="">
+</div>
 
-    <div>
+<!-- BOT DETAIL -->
+<div class="card" id="detailPage">
 
-      <span id="activeBotName"
-            class="profile-name">
-      </span>
+ <button class="back" onclick="showList()">
+  ← Back to All Bots
+ </button>
 
-      <span id="activeBotAcc"
-            class="profile-acc">
-      </span>
+ <div class="bot-profile">
 
-    </div>
+  <img id="detailAvatar" class="avatar">
 
+  <div>
+   <div class="profile-name" id="detailName"></div>
+   <div class="acc" id="detailAcc"></div>
   </div>
 
+ </div>
 
-  <div class="next-bet">
+ <div class="next">
 
-    <div class="next-title">
-      NEXT PERIOD PREDICTION
-    </div>
-
-    <div class="next-period"
-         id="detailPeriodNum">
-      Period: Loading...
-    </div>
-
-    <div id="detailPredBadge"></div>
-
+  <div class="next-title">
+   NEXT PERIOD PREDICTION
   </div>
 
-
-  <div class="history-title">
-    Last 10 Bets History
+  <div class="next-period" id="detailPeriod">
+   Period: Loading...
   </div>
 
-  <table class="bets-table">
+  <div id="detailPrediction"></div>
 
-    <thead>
-      <tr>
-        <th>Period</th>
-        <th>Prediction</th>
-        <th>Result</th>
-        <th>Status</th>
-      </tr>
-    </thead>
+ </div>
 
-    <tbody id="betsHistoryTable"></tbody>
+ <div class="history-title">
+  Last 10 Bets History
+ </div>
 
-  </table>
+ <table>
+
+  <thead>
+   <tr>
+    <th>Period</th>
+    <th>Prediction</th>
+    <th>Result</th>
+    <th>Status</th>
+   </tr>
+  </thead>
+
+  <tbody id="historyTable"></tbody>
+
+ </table>
 
 </div>
 
 
 <script>
 
-/* ==========================================
-   API TOKEN
-   ==========================================
+/*
+==================================================
+ IMPORTANT
+==================================================
 
-   IMPORTANT:
-   Yahan apna API token paste karein.
+YAHAN APNE API/PROXY KA URL DALO.
 
-   Example:
-   const API_TOKEN = "YOUR_TOKEN";
+Example:
 
-   Public GitHub par token visible ho sakta hai.
-========================================== */
+const API_URL =
+"https://your-worker.workers.dev";
 
-const API_TOKEN = "PASTE_YOUR_TOKEN_HERE";
+Direct API token ko public GitHub HTML me mat rakho.
+==================================================
+*/
 
-
-/* ==========================================
-   API URLS
-========================================== */
-
-const API_URL = {
-
-  "30s":
-  "https://api.wingobot.com/v2/30-sec-game-history",
-
-  /*
-    1-minute ka exact API endpoint aapke
-    diye hue code me nahi tha.
-
-    Isliye yahan fake period calculation
-    nahi ki gayi hai.
-  */
-
-  "1m":
-  "https://api.wingobot.com/v2/1-min-game-history"
-
-};
+const API_URL =
+"https://YOUR-WORKER.workers.dev";
 
 
-/* ==========================================
-   GAME STATE
-========================================== */
-
-let currentGameMode = "30s";
-
+let currentPeriod = "";
+let previousPeriod = "";
 let activeBotId = null;
 
-let currentServerPeriod = "";
-
-let serverHistory = [];
-
-let lastServerPeriod = {
-
-  "30s":"",
-  "1m":""
-
-};
-
 
 /* ==========================================
-   BOT CREATOR
+   BOTS
 ========================================== */
 
-function createBots(){
+const bots = [
 
-  return [
+ {
+  id:1,
+  name:"Sophia",
+  avatar:"https://randomuser.me/api/portraits/women/44.jpg",
+  pred:"BIG",
+  history:[]
+ },
 
-    {
-      id:1,
-      name:"Sophia",
-      avatar:"https://randomuser.me/api/portraits/women/44.jpg",
-      history:[],
-      nextPred:"BIG"
-    },
+ {
+  id:2,
+  name:"Daniel",
+  avatar:"https://randomuser.me/api/portraits/men/32.jpg",
+  pred:"SMALL",
+  history:[]
+ },
 
-    {
-      id:2,
-      name:"Daniel",
-      avatar:"https://randomuser.me/api/portraits/men/32.jpg",
-      history:[],
-      nextPred:"SMALL"
-    },
+ {
+  id:3,
+  name:"Emma",
+  avatar:"https://randomuser.me/api/portraits/women/68.jpg",
+  pred:"BIG",
+  history:[]
+ },
 
-    {
-      id:3,
-      name:"Emma",
-      avatar:"https://randomuser.me/api/portraits/women/68.jpg",
-      history:[],
-      nextPred:"BIG"
-    },
+ {
+  id:4,
+  name:"Ryan",
+  avatar:"https://randomuser.me/api/portraits/men/46.jpg",
+  pred:"SMALL",
+  history:[]
+ },
 
-    {
-      id:4,
-      name:"Ryan",
-      avatar:"https://randomuser.me/api/portraits/men/46.jpg",
-      history:[],
-      nextPred:"SMALL"
-    },
+ {
+  id:5,
+  name:"Olivia",
+  avatar:"https://randomuser.me/api/portraits/women/65.jpg",
+  pred:"BIG",
+  history:[]
+ },
 
-    {
-      id:5,
-      name:"Olivia",
-      avatar:"https://randomuser.me/api/portraits/women/65.jpg",
-      history:[],
-      nextPred:"BIG"
-    },
+ {
+  id:6,
+  name:"Liam",
+  avatar:"https://randomuser.me/api/portraits/men/22.jpg",
+  pred:"SMALL",
+  history:[]
+ },
 
-    {
-      id:6,
-      name:"Liam",
-      avatar:"https://randomuser.me/api/portraits/men/22.jpg",
-      history:[],
-      nextPred:"SMALL"
-    },
+ {
+  id:7,
+  name:"Ava",
+  avatar:"https://randomuser.me/api/portraits/women/26.jpg",
+  pred:"BIG",
+  history:[]
+ },
 
-    {
-      id:7,
-      name:"Ava",
-      avatar:"https://randomuser.me/api/portraits/women/26.jpg",
-      history:[],
-      nextPred:"BIG"
-    },
+ {
+  id:8,
+  name:"Noah",
+  avatar:"https://randomuser.me/api/portraits/men/85.jpg",
+  pred:"SMALL",
+  history:[]
+ },
 
-    {
-      id:8,
-      name:"Noah",
-      avatar:"https://randomuser.me/api/portraits/men/85.jpg",
-      history:[],
-      nextPred:"SMALL"
-    },
+ {
+  id:9,
+  name:"Mia",
+  avatar:"https://randomuser.me/api/portraits/women/12.jpg",
+  pred:"BIG",
+  history:[]
+ },
 
-    {
-      id:9,
-      name:"Mia",
-      avatar:"https://randomuser.me/api/portraits/women/12.jpg",
-      history:[],
-      nextPred:"BIG"
-    },
+ {
+  id:10,
+  name:"James",
+  avatar:"https://randomuser.me/api/portraits/men/11.jpg",
+  pred:"SMALL",
+  history:[]
+ }
 
-    {
-      id:10,
-      name:"James",
-      avatar:"https://randomuser.me/api/portraits/men/11.jpg",
-      history:[],
-      nextPred:"SMALL"
-    }
-
-  ];
-
-}
-
-
-let botData = {
-
-  "30s":createBots(),
-
-  "1m":createBots()
-
-};
-
-
-/* ==========================================
-   STORAGE
-========================================== */
-
-function storageKey(){
-
-  return "daman_period_" + currentGameMode;
-
-}
-
-
-function savePeriod(period){
-
-  if(!period) return;
-
-  localStorage.setItem(
-    storageKey(),
-    String(period)
-  );
-
-}
-
-
-function getSavedPeriod(){
-
-  return localStorage.getItem(
-    storageKey()
-  ) || "";
-
-}
-
-
-/* ==========================================
-   PERIOD COMPARISON
-========================================== */
-
-function periodIsNotOlder(newPeriod,oldPeriod){
-
-  if(!oldPeriod) return true;
-
-  try{
-
-    return BigInt(newPeriod) >= BigInt(oldPeriod);
-
-  }catch(e){
-
-    return newPeriod !== oldPeriod;
-
-  }
-
-}
-
-
-/* ==========================================
-   PREDICTION
-========================================== */
-
-function randomPrediction(){
-
-  return Math.random() >= .5
-    ? "BIG"
-    : "SMALL";
-
-}
+];
 
 
 /* ==========================================
@@ -796,390 +566,15 @@ function randomPrediction(){
 
 function getAccuracy(bot){
 
-  if(!bot.history.length)
-    return 0;
-
-  const finished =
-    bot.history.filter(
-      x => x.result !== "Waiting"
-    );
-
-  if(!finished.length)
-    return 0;
-
-  const wins =
-    finished.filter(
-      x => x.status === "WIN"
-    ).length;
-
-  return Math.round(
-    wins / finished.length * 100
-  );
-
-}
-
-
-/* ==========================================
-   FETCH API
-========================================== */
-
-async function fetchGameData(){
-
-  const url = API_URL[currentGameMode];
-
-  if(!url) return;
-
-  try{
-
-    document.getElementById("apiError")
-      .innerText = "";
-
-    const response = await fetch(
-      url,
-      {
-        method:"GET",
-
-        headers:{
-          "Authorization":
-            "Bearer " + API_TOKEN,
-
-          "Accept":
-            "application/json"
-        },
-
-        cache:"no-store"
-      }
-    );
-
-
-    if(!response.ok){
-
-      throw new Error(
-        "HTTP " + response.status
-      );
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    if(!data.success){
-
-      throw new Error(
-        data.error || "API Error"
-      );
-
-    }
-
-
-    if(
-      !data.current ||
-      !data.current.issueNumber
-    ){
-
-      throw new Error(
-        "Current period not found"
-      );
-
-    }
-
-
-    const apiPeriod =
-      String(
-        data.current.issueNumber
-      );
-
-
-    const savedPeriod =
-      getSavedPeriod();
-
-
-    /*
-      API period ko piche jane nahi dena.
-    */
-
-    if(
-      !savedPeriod ||
-      periodIsNotOlder(
-        apiPeriod,
-        savedPeriod
-      )
-    ){
-
-      currentServerPeriod =
-        apiPeriod;
-
-      savePeriod(
-        apiPeriod
-      );
-
-    }else{
-
-      currentServerPeriod =
-        savedPeriod;
-
-    }
-
-
-    serverHistory =
-      Array.isArray(data.history)
-      ? data.history
-      : [];
-
-
-    renderServerData();
-
-    processNewPeriod();
-
-  }catch(error){
-
-    console.log(
-      "API ERROR:",
-      error
-    );
-
-
-    const saved =
-      getSavedPeriod();
-
-
-    if(saved){
-
-      currentServerPeriod =
-        saved;
-
-      renderServerData();
-
-    }
-
-
-    document.getElementById("apiError")
-      .innerText =
-        "Server unavailable";
-
-  }
-
-}
-
-
-/* ==========================================
-   SERVER DISPLAY
-========================================== */
-
-function renderServerData(){
-
-  document.getElementById("periodId")
-    .innerText =
-      currentServerPeriod ||
-      "Loading...";
-
-
-  document.getElementById("detailPeriodNum")
-    .innerText =
-      "Period: " +
-      (
-        currentServerPeriod ||
-        "Loading..."
-      );
-
-
-  renderRecentBalls();
-
-}
-
-
-/* ==========================================
-   RECENT RESULTS
-========================================== */
-
-function renderRecentBalls(){
-
-  const container =
-    document.getElementById(
-      "recentBalls"
-    );
-
-  container.innerHTML = "";
-
-
-  serverHistory
-    .slice(0,5)
-    .reverse()
-    .forEach(row=>{
-
-      const number =
-        Number(row.number);
-
-
-      const ball =
-        document.createElement(
-          "div"
-        );
-
-
-      ball.className =
-        "ball " +
-        (
-          number >= 5
-          ? "ball-green"
-          : "ball-red"
-        );
-
-
-      ball.innerText =
-        Number.isNaN(number)
-        ? "?"
-        : number;
-
-
-      container.appendChild(
-        ball
-      );
-
-    });
-
-}
-
-
-/* ==========================================
-   PROCESS NEW PERIOD
-========================================== */
-
-function processNewPeriod(){
-
-  if(!currentServerPeriod)
-    return;
-
-
-  const oldPeriod =
-    lastServerPeriod[
-      currentGameMode
-    ];
-
-
-  /*
-    Same period ko dobara process nahi karna.
-  */
-
-  if(oldPeriod === currentServerPeriod){
-
-    renderBotList();
-
-    if(activeBotId)
-      renderActiveBotPage();
-
-    return;
-
-  }
-
-
-  lastServerPeriod[
-    currentGameMode
-  ] =
-    currentServerPeriod;
-
-
-  const latest =
-    serverHistory[0];
-
-
-  /*
-    First load par old API history ko
-    bot history me fill karna.
-  */
-
-  if(
-    latest &&
-    botData[currentGameMode][0].history.length === 0
-  ){
-
-    initializeBotHistory();
-
-  }
-
-
-  renderBotList();
-
-
-  if(activeBotId)
-    renderActiveBotPage();
-
-}
-
-
-/* ==========================================
-   INITIAL HISTORY
-========================================== */
-
-function initializeBotHistory(){
-
-  const history =
-    serverHistory
-      .slice(0,10);
-
-
-  botData[currentGameMode]
-    .forEach(bot=>{
-
-      bot.history = [];
-
-
-      history.forEach(row=>{
-
-        const number =
-          Number(row.number);
-
-
-        if(
-          Number.isNaN(number)
-        ) return;
-
-
-        const actual =
-          number >= 5
-          ? "BIG"
-          : "SMALL";
-
-
-        const prediction =
-          randomPrediction();
-
-
-        bot.history.push({
-
-          period:
-            String(row.issueNumber),
-
-          prediction:
-            prediction,
-
-          result:
-            actual +
-            " (" +
-            number +
-            ")",
-
-          status:
-            prediction === actual
-            ? "WIN"
-            : "LOSS"
-
-        });
-
-      });
-
-
-      bot.history =
-        bot.history.slice(0,10);
-
-
-      bot.nextPred =
-        randomPrediction();
-
-    });
-
+ if(!bot.history || bot.history.length===0)
+  return 100;
+
+ let wins =
+  bot.history.filter(x=>x.status==="WIN").length;
+
+ return Math.round(
+  wins / bot.history.length * 100
+ );
 }
 
 
@@ -1187,141 +582,92 @@ function initializeBotHistory(){
    BOT LIST
 ========================================== */
 
-function renderBotList(){
+function renderBots(){
 
-  const container =
-    document.getElementById(
-      "botListContainer"
-    );
+ const box =
+  document.getElementById("bots");
 
+ box.innerHTML="";
 
-  let bots =
-    [...botData[currentGameMode]];
-
-
-  bots.sort(
-    (a,b)=>
-      getAccuracy(b) -
-      getAccuracy(a)
+ const sorted =
+  [...bots].sort(
+   (a,b)=>getAccuracy(b)-getAccuracy(a)
   );
 
+ sorted.forEach((bot,index)=>{
 
-  container.innerHTML = "";
+  const rankClass =
+   index===0 ? "rank1" :
+   index===1 ? "rank2" :
+   index===2 ? "rank3" : "";
 
+  const predClass =
+   bot.pred==="BIG" ? "big" : "small";
 
-  bots.forEach(
-    (bot,index)=>{
+  let dots="";
 
-      const accuracy =
-        getAccuracy(bot);
+  (bot.history||[])
+   .slice(-6)
+   .forEach(x=>{
 
+    dots += `
+     <span class="dot ${
+      x.status==="WIN"
+      ? "win-dot"
+      : "loss-dot"
+     }">
+      ${x.status==="WIN"?"✓":"✕"}
+     </span>
+    `;
 
-      const rankClass =
-        index === 0
-        ? "rank1"
-        : index === 1
-        ? "rank2"
-        : index === 2
-        ? "rank3"
-        : "";
-
-
-      const dots =
-        bot.history
-          .slice(0,6)
-          .map(
-            h => `
-              <span class="dot ${
-                h.status === "WIN"
-                ? "dot-win"
-                : "dot-loss"
-              }">
-                ${
-                  h.status === "WIN"
-                  ? "✓"
-                  : "✕"
-                }
-              </span>
-            `
-          )
-          .join("");
+   });
 
 
-      const pred =
-        bot.nextPred ||
-        randomPrediction();
+  box.innerHTML += `
 
+   <div class="bot"
+        onclick="openBot(${bot.id})">
 
-      const predClass =
-        pred === "BIG"
-        ? "pred-big"
-        : "pred-small";
+    <div class="bot-left">
 
+     <div class="rank ${rankClass}">
+      ${index+1}
+     </div>
 
-      const card =
-        document.createElement(
-          "div"
-        );
+     <img
+      class="avatar"
+      src="${bot.avatar}"
+     >
 
+     <div>
 
-      card.className =
-        "bot-card";
+      <div>
+       <span class="bot-name">
+        ${bot.name}
+       </span>
 
+       <span class="acc">
+        ${getAccuracy(bot)}%
+       </span>
+      </div>
 
-      card.onclick = () =>
-        openBotPage(bot.id);
+      <div class="dots">
+       ${dots}
+      </div>
 
+     </div>
 
-      card.innerHTML = `
+    </div>
 
-        <div class="bot-left">
+    <div class="pred ${predClass}">
+     ${bot.pred}
+    </div>
 
-          <div class="rank ${rankClass}">
-            ${index + 1}
-          </div>
+   </div>
 
-          <img
-            class="bot-avatar"
-            src="${bot.avatar}"
-          >
+  `;
 
-          <div>
-
-            <div>
-
-              <span class="bot-name">
-                ${bot.name}
-              </span>
-
-              <span class="bot-acc">
-                ${accuracy}%
-              </span>
-
-            </div>
-
-            <div class="history-dots">
-              ${dots}
-            </div>
-
-          </div>
-
-        </div>
-
-        <div>
-          <span class="pred ${predClass}">
-            ${pred}
-          </span>
-        </div>
-
-      `;
-
-
-      container.appendChild(
-        card
-      );
-
-    }
-  );
+ });
 
 }
 
@@ -1330,161 +676,115 @@ function renderBotList(){
    OPEN BOT
 ========================================== */
 
-function openBotPage(id){
+function openBot(id){
 
-  activeBotId = id;
+ activeBotId=id;
 
+ document.getElementById("listPage")
+ .style.display="none";
 
-  document.getElementById(
-    "mainPage"
-  ).style.display = "none";
+ document.getElementById("detailPage")
+ .style.display="block";
 
+ renderDetail();
 
-  document.getElementById(
-    "botDetailPage"
-  ).style.display = "block";
-
-
-  renderActiveBotPage();
-
-
-  window.scrollTo(
-    {
-      top:0,
-      behavior:"smooth"
-    }
-  );
+ window.scrollTo({
+  top:0,
+  behavior:"smooth"
+ });
 
 }
 
 
 /* ==========================================
-   DETAIL PAGE
+   BOT DETAIL
 ========================================== */
 
-function renderActiveBotPage(){
+function renderDetail(){
 
-  if(!activeBotId)
-    return;
+ if(!activeBotId)return;
 
+ const bot =
+  bots.find(x=>x.id===activeBotId);
 
-  const bot =
-    botData[currentGameMode]
-      .find(
-        x => x.id === activeBotId
-      );
+ if(!bot)return;
 
 
-  if(!bot)
-    return;
+ document.getElementById("detailAvatar")
+ .src=bot.avatar;
+
+ document.getElementById("detailName")
+ .innerText=bot.name;
+
+ document.getElementById("detailAcc")
+ .innerText=getAccuracy(bot)+"%";
 
 
-  document.getElementById(
-    "activeBotAvatar"
-  ).src = bot.avatar;
+ document.getElementById("detailPeriod")
+ .innerText=
+  "Period: "+(currentPeriod||"Loading...");
 
 
-  document.getElementById(
-    "activeBotName"
-  ).innerText =
-    bot.name;
+ const cls =
+  bot.pred==="BIG"
+  ? "big"
+  : "small";
 
 
-  document.getElementById(
-    "activeBotAcc"
-  ).innerText =
-    getAccuracy(bot) + "%";
+ document.getElementById("detailPrediction")
+ .innerHTML=`
+
+  <span class="next-badge ${cls}">
+   ${bot.pred}
+  </span>
+
+ `;
 
 
-  document.getElementById(
-    "detailPeriodNum"
-  ).innerText =
-    "Period: " +
-    (
-      currentServerPeriod ||
-      "Loading..."
-    );
+ const table =
+  document.getElementById("historyTable");
+
+ table.innerHTML="";
 
 
-  const prediction =
-    bot.nextPred ||
-    randomPrediction();
+ [...(bot.history||[])]
+ .reverse()
+ .slice(0,10)
+ .forEach(x=>{
 
+  table.innerHTML += `
 
-  const predClass =
-    prediction === "BIG"
-    ? "pred-big"
-    : "pred-small";
+   <tr>
 
+    <td>
+     ${String(x.period).slice(-8)}
+    </td>
 
-  document.getElementById(
-    "detailPredBadge"
-  ).innerHTML = `
+    <td>
+     <b>${x.prediction}</b>
+    </td>
 
-    <span class="next-badge ${predClass}">
-      ${prediction}
-    </span>
+    <td>
+     ${x.result}
+    </td>
+
+    <td class="${
+     x.status==="WIN"
+     ? "status-win"
+     : "status-loss"
+    }">
+     ${
+      x.status==="WIN"
+      ? "✓ Win"
+      : "✕ Loss"
+     }
+    </td>
+
+   </tr>
 
   `;
 
-
-  const table =
-    document.getElementById(
-      "betsHistoryTable"
-    );
-
-
-  table.innerHTML = "";
-
-
-  bot.history
-    .slice(0,10)
-    .forEach(h=>{
-
-      const tr =
-        document.createElement(
-          "tr"
-        );
-
-
-      const predictionBadge =
-        h.prediction === "BIG"
-        ? `<span class="badge-big">BIG</span>`
-        : `<span class="badge-small">SMALL</span>`;
-
-
-      const status =
-        h.status === "WIN"
-        ? `<span class="win-text">✓ Win</span>`
-        : `<span class="loss-text">✕ Loss</span>`;
-
-
-      tr.innerHTML = `
-
-        <td>
-          ${String(h.period).slice(-8)}
-        </td>
-
-        <td>
-          ${predictionBadge}
-        </td>
-
-        <td>
-          <b>${h.result}</b>
-        </td>
-
-        <td>
-          ${status}
-        </td>
-
-      `;
-
-
-      table.appendChild(
-        tr
-      );
-
-    });
+ });
 
 }
 
@@ -1493,148 +793,1303 @@ function renderActiveBotPage(){
    BACK
 ========================================== */
 
-function showListPage(){
+function showList(){
 
-  activeBotId = null;
+ activeBotId=null;
 
+ document.getElementById("detailPage")
+ .style.display="none";
 
-  document.getElementById(
-    "botDetailPage"
-  ).style.display = "none";
+ document.getElementById("listPage")
+ .style.display="block";
 
-
-  document.getElementById(
-    "mainPage"
-  ).style.display = "block";
-
-
-  renderBotList();
-
-
-  window.scrollTo(
-    {
-      top:0,
-      behavior:"smooth"
-    }
-  );
+ renderBots();
 
 }
 
 
 /* ==========================================
-   GAME MODE
+   SERVER DATA
 ========================================== */
 
-function switchGameMode(mode){
+async function fetchServer(){
 
-  if(mode === currentGameMode)
-    return;
+ try{
 
-
-  currentGameMode = mode;
-
-
-  document.getElementById(
-    "tab30s"
-  ).classList.remove("active");
-
-
-  document.getElementById(
-    "tab1m"
-  ).classList.remove("active");
+  const response =
+   await fetch(
+    API_URL+"?t="+Date.now(),
+    {
+     method:"GET",
+     cache:"no-store"
+    }
+   );
 
 
-  if(mode === "30s"){
+  if(!response.ok){
 
-    document.getElementById(
-      "tab30s"
-    ).classList.add("active");
+   throw new Error(
+    "HTTP "+response.status
+   );
 
-
-    document.getElementById(
-      "bannerGameTitle"
-    ).innerText =
-      "WinGo 30sec";
-
-  }else{
-
-    document.getElementById(
-      "tab1m"
-    ).classList.add("active");
+  }
 
 
-    document.getElementById(
-      "bannerGameTitle"
-    ).innerText =
-      "WinGo 1 Min";
+  const data =
+   await response.json();
+
+
+  if(!data.success){
+
+   throw new Error(
+    data.error || "API error"
+   );
 
   }
 
 
   /*
-    30s aur 1m ka period alag.
+  ==========================================
+  MOST IMPORTANT PART
+
+  PERIOD PHONE KI CLOCK SE NAHI BANEGA.
+
+  API:
+
+  data.current.issueNumber
+
+  SERVER KA CURRENT PERIOD HAI.
+  ==========================================
   */
 
-  currentServerPeriod =
-    getSavedPeriod();
+  const serverPeriod =
+   String(
+    data.current.issueNumber
+   );
 
 
-  serverHistory = [];
+  /*
+  Old API response se period
+  kabhi piche nahi jayega.
+  */
+
+  if(currentPeriod){
+
+   try{
+
+    if(
+     BigInt(serverPeriod)
+     <
+     BigInt(currentPeriod)
+    ){
+
+     console.log(
+      "Older period ignored:",
+      serverPeriod
+     );
+
+     return;
+
+    }
+
+   }catch(e){}
+
+  }
 
 
-  fetchGameData();
+  if(
+   currentPeriod &&
+   serverPeriod !== currentPeriod
+  ){
+
+   previousPeriod =
+    currentPeriod;
+
+   processCompletedPeriod(
+    previousPeriod,
+    data.history || []
+   );
+
+  }
+
+
+  currentPeriod =
+   serverPeriod;
+
+
+  document.getElementById("period")
+   .innerText=currentPeriod;
+
+
+  if(activeBotId){
+
+   document.getElementById("detailPeriod")
+    .innerText=
+     "Period: "+currentPeriod;
+
+  }
+
+
+  /*
+  ==========================================
+  REAL SERVER HISTORY NUMBERS
+  ==========================================
+  */
+
+  const balls =
+   document.getElementById("balls");
+
+  balls.innerHTML="";
+
+
+  (data.history||[])
+   .slice(0,5)
+   .forEach(row=>{
+
+    const number =
+     Number(row.number);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Daman Prediction</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+
+body{
+ background:#080d1a;
+ color:#fff;
+ max-width:600px;
+ margin:auto;
+ padding:12px;
+}
+
+.header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:12px 0;
+ border-bottom:1px solid #26334d;
+ margin-bottom:12px;
+}
+
+.logo{
+ color:#ffb703;
+ font-weight:800;
+ font-size:17px;
+}
+
+.login{
+ background:#ff2a55;
+ padding:9px 17px;
+ border-radius:22px;
+ font-weight:bold;
+}
+
+.tabs{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:6px;
+ background:#fff;
+ padding:6px;
+ border-radius:15px;
+ margin-bottom:12px;
+}
+
+.tab{
+ background:#eef2f7;
+ color:#64748b;
+ padding:11px 2px;
+ text-align:center;
+ border-radius:10px;
+ font-size:11px;
+ font-weight:bold;
+}
+
+.tab.active{
+ background:#ff4d4d;
+ color:#fff;
+}
+
+.tab.disabled{
+ opacity:.45;
+}
+
+.banner{
+ background:#e63946;
+ border-radius:17px;
+ padding:16px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px;
+}
+
+.game-title{
+ font-size:16px;
+ font-weight:800;
+}
+
+.balls{
+ display:flex;
+ gap:5px;
+ margin-top:8px;
+}
+
+.ball{
+ width:29px;
+ height:29px;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:bold;
+}
+
+.ball-red{background:#ff4d4d}
+.ball-green{background:#2ec4b6}
+
+.timer{
+ text-align:right;
+ font-size:11px;
+}
+
+.time-box{
+ display:inline-block;
+ background:#fff;
+ color:#000;
+ padding:4px 7px;
+ border-radius:5px;
+ font-size:19px;
+ font-weight:800;
+ margin-top:4px;
+}
+
+.period{
+ font-size:11px;
+ font-weight:800;
+ margin-top:7px;
+ white-space:nowrap;
+}
+
+.error{
+ color:#ff7777;
+ text-align:center;
+ font-size:12px;
+ margin:8px 0;
+}
+
+.card{
+ background:#131b2e;
+ border:1px solid #26334d;
+ border-radius:17px;
+ padding:13px;
+ margin-bottom:15px;
+}
+
+.heading{
+ color:#ffb703;
+ font-size:15px;
+ font-weight:800;
+ margin-bottom:12px;
+}
+
+.bot{
+ background:#1a243a;
+ border:1px solid #26334d;
+ border-radius:13px;
+ padding:11px;
+ margin:9px 0;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ cursor:pointer;
+}
+
+.bot-left{
+ display:flex;
+ align-items:center;
+ gap:9px;
+}
+
+.rank{
+ width:27px;
+ height:27px;
+ border-radius:50%;
+ background:#2b374e;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:bold;
+}
+
+.rank1{background:#ffb703;color:#000}
+.rank2{background:#cbd5e1;color:#000}
+.rank3{background:#b45309}
+
+.avatar{
+ width:47px;
+ height:47px;
+ border-radius:50%;
+ object-fit:cover;
+ border:2px solid #ffb703;
+}
+
+.bot-name{
+ font-size:15px;
+ font-weight:800;
+}
+
+.acc{
+ color:#2ec4b6;
+ font-size:15px;
+ font-weight:800;
+ margin-left:5px;
+}
+
+.dots{
+ display:flex;
+ gap:3px;
+ margin-top:5px;
+}
+
+.dot{
+ width:13px;
+ height:13px;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:8px;
+ font-weight:bold;
+}
+
+.win-dot{
+ background:#2ec4b6;
+ color:#000;
+}
+
+.loss-dot{
+ background:#e63946;
+ color:#fff;
+}
+
+.pred{
+ padding:8px 12px;
+ border-radius:7px;
+ font-weight:800;
+ font-size:13px;
+}
+
+.big{
+ background:#ff9f1c;
+ color:#000;
+}
+
+.small{
+ background:#2ec4b6;
+ color:#000;
+}
+
+#detailPage{
+ display:none;
+}
+
+.back{
+ background:#2b374e;
+ color:#ffb703;
+ border:0;
+ padding:10px 15px;
+ border-radius:9px;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+.bot-profile{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ margin-top:16px;
+}
+
+.profile-name{
+ font-size:19px;
+ font-weight:800;
+}
+
+.next{
+ border:2px solid #ffb703;
+ border-radius:15px;
+ padding:18px;
+ text-align:center;
+ margin-top:17px;
+ background:linear-gradient(135deg,#1e293b,#0f172a);
+}
+
+.next-title{
+ color:#94a3b8;
+ font-size:12px;
+ font-weight:bold;
+}
+
+.next-period{
+ color:#ffb703;
+ font-weight:800;
+ margin-top:6px;
+}
+
+.next-badge{
+ display:inline-block;
+ margin-top:11px;
+ padding:10px 35px;
+ border-radius:9px;
+ font-size:23px;
+ font-weight:900;
+}
+
+.history-title{
+ margin-top:18px;
+ font-size:13px;
+ font-weight:bold;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ margin-top:10px;
+ font-size:11px;
+}
+
+th{
+ color:#64748b;
+ text-align:left;
+ padding:7px 2px;
+}
+
+td{
+ padding:8px 2px;
+ border-top:1px solid #26334d;
+}
+
+.status-win{
+ color:#2ec4b6;
+ font-weight:bold;
+}
+
+.status-loss{
+ color:#e63946;
+ font-weight:bold;
+}
+
+.loading{
+ text-align:center;
+ color:#94a3b8;
+ padding:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+ <div class="logo">👑 DAMAN PREDICTION</div>
+ <div class="login">Login</div>
+</div>
+
+<div class="tabs">
+ <div class="tab active">⏱️<br>WinGo 30s</div>
+ <div class="tab">⏱️<br>WinGo 1m</div>
+ <div class="tab disabled">🔒<br>WinGo 3m</div>
+ <div class="tab disabled">🔒<br>WinGo 5m</div>
+</div>
+
+<div class="banner">
+
+ <div>
+  <div class="game-title">WinGo 30sec</div>
+  <div class="balls" id="balls"></div>
+ </div>
+
+ <div class="timer">
+  <div>Time remaining</div>
+
+  <span class="time-box">0</span>
+  <span class="time-box">0</span> :
+  <span class="time-box" id="s1">-</span>
+  <span class="time-box" id="s2">-</span>
+
+  <div class="period" id="period">
+   Connecting...
+  </div>
+ </div>
+
+</div>
+
+<div id="error" class="error"></div>
+
+<!-- BOT LIST -->
+<div class="card" id="listPage">
+
+ <div class="heading">
+  🏆 Select Bot to Open Prediction Page
+ </div>
+
+ <div id="bots"></div>
+
+</div>
+
+<!-- BOT DETAIL -->
+<div class="card" id="detailPage">
+
+ <button class="back" onclick="showList()">
+  ← Back to All Bots
+ </button>
+
+ <div class="bot-profile">
+
+  <img id="detailAvatar" class="avatar">
+
+  <div>
+   <div class="profile-name" id="detailName"></div>
+   <div class="acc" id="detailAcc"></div>
+  </div>
+
+ </div>
+
+ <div class="next">
+
+  <div class="next-title">
+   NEXT PERIOD PREDICTION
+  </div>
+
+  <div class="next-period" id="detailPeriod">
+   Period: Loading...
+  </div>
+
+  <div id="detailPrediction"></div>
+
+ </div>
+
+ <div class="history-title">
+  Last 10 Bets History
+ </div>
+
+ <table>
+
+  <thead>
+   <tr>
+    <th>Period</th>
+    <th>Prediction</th>
+    <th>Result</th>
+    <th>Status</th>
+   </tr>
+  </thead>
+
+  <tbody id="historyTable"></tbody>
+
+ </table>
+
+</div>
+
+
+<script>
+
+/*
+==================================================
+ IMPORTANT
+==================================================
+
+YAHAN APNE API/PROXY KA URL DALO.
+
+Example:
+
+const API_URL =
+"https://your-worker.workers.dev";
+
+Direct API token ko public GitHub HTML me mat rakho.
+==================================================
+*/
+
+const API_URL =
+"https://YOUR-WORKER.workers.dev";
+
+
+let currentPeriod = "";
+let previousPeriod = "";
+let activeBotId = null;
+
+
+/* ==========================================
+   BOTS
+========================================== */
+
+const bots = [
+
+ {
+  id:1,
+  name:"Sophia",
+  avatar:"https://randomuser.me/api/portraits/women/44.jpg",
+  pred:"BIG",
+  history:[]
+ },
+
+ {
+  id:2,
+  name:"Daniel",
+  avatar:"https://randomuser.me/api/portraits/men/32.jpg",
+  pred:"SMALL",
+  history:[]
+ },
+
+ {
+  id:3,
+  name:"Emma",
+  avatar:"https://randomuser.me/api/portraits/women/68.jpg",
+  pred:"BIG",
+  history:[]
+ },
+
+ {
+  id:4,
+  name:"Ryan",
+  avatar:"https://randomuser.me/api/portraits/men/46.jpg",
+  pred:"SMALL",
+  history:[]
+ },
+
+ {
+  id:5,
+  name:"Olivia",
+  avatar:"https://randomuser.me/api/portraits/women/65.jpg",
+  pred:"BIG",
+  history:[]
+ },
+
+ {
+  id:6,
+  name:"Liam",
+  avatar:"https://randomuser.me/api/portraits/men/22.jpg",
+  pred:"SMALL",
+  history:[]
+ },
+
+ {
+  id:7,
+  name:"Ava",
+  avatar:"https://randomuser.me/api/portraits/women/26.jpg",
+  pred:"BIG",
+  history:[]
+ },
+
+ {
+  id:8,
+  name:"Noah",
+  avatar:"https://randomuser.me/api/portraits/men/85.jpg",
+  pred:"SMALL",
+  history:[]
+ },
+
+ {
+  id:9,
+  name:"Mia",
+  avatar:"https://randomuser.me/api/portraits/women/12.jpg",
+  pred:"BIG",
+  history:[]
+ },
+
+ {
+  id:10,
+  name:"James",
+  avatar:"https://randomuser.me/api/portraits/men/11.jpg",
+  pred:"SMALL",
+  history:[]
+ }
+
+];
+
+
+/* ==========================================
+   ACCURACY
+========================================== */
+
+function getAccuracy(bot){
+
+ if(!bot.history || bot.history.length===0)
+  return 100;
+
+ let wins =
+  bot.history.filter(x=>x.status==="WIN").length;
+
+ return Math.round(
+  wins / bot.history.length * 100
+ );
+}
+
+
+/* ==========================================
+   BOT LIST
+========================================== */
+
+function renderBots(){
+
+ const box =
+  document.getElementById("bots");
+
+ box.innerHTML="";
+
+ const sorted =
+  [...bots].sort(
+   (a,b)=>getAccuracy(b)-getAccuracy(a)
+  );
+
+ sorted.forEach((bot,index)=>{
+
+  const rankClass =
+   index===0 ? "rank1" :
+   index===1 ? "rank2" :
+   index===2 ? "rank3" : "";
+
+  const predClass =
+   bot.pred==="BIG" ? "big" : "small";
+
+  let dots="";
+
+  (bot.history||[])
+   .slice(-6)
+   .forEach(x=>{
+
+    dots += `
+     <span class="dot ${
+      x.status==="WIN"
+      ? "win-dot"
+      : "loss-dot"
+     }">
+      ${x.status==="WIN"?"✓":"✕"}
+     </span>
+    `;
+
+   });
+
+
+  box.innerHTML += `
+
+   <div class="bot"
+        onclick="openBot(${bot.id})">
+
+    <div class="bot-left">
+
+     <div class="rank ${rankClass}">
+      ${index+1}
+     </div>
+
+     <img
+      class="avatar"
+      src="${bot.avatar}"
+     >
+
+     <div>
+
+      <div>
+       <span class="bot-name">
+        ${bot.name}
+       </span>
+
+       <span class="acc">
+        ${getAccuracy(bot)}%
+       </span>
+      </div>
+
+      <div class="dots">
+       ${dots}
+      </div>
+
+     </div>
+
+    </div>
+
+    <div class="pred ${predClass}">
+     ${bot.pred}
+    </div>
+
+   </div>
+
+  `;
+
+ });
 
 }
 
 
 /* ==========================================
-   TIMER
+   OPEN BOT
 ========================================== */
 
-function updateTimer(){
+function openBot(id){
 
-  const now =
-    new Date();
+ activeBotId=id;
+
+ document.getElementById("listPage")
+ .style.display="none";
+
+ document.getElementById("detailPage")
+ .style.display="block";
+
+ renderDetail();
+
+ window.scrollTo({
+  top:0,
+  behavior:"smooth"
+ });
+
+}
 
 
-  let remaining;
+/* ==========================================
+   BOT DETAIL
+========================================== */
+
+function renderDetail(){
+
+ if(!activeBotId)return;
+
+ const bot =
+  bots.find(x=>x.id===activeBotId);
+
+ if(!bot)return;
 
 
-  if(
-    currentGameMode === "30s"
-  ){
+ document.getElementById("detailAvatar")
+ .src=bot.avatar;
 
-    remaining =
-      30 -
-      (
-        now.getSeconds() % 30
-      );
+ document.getElementById("detailName")
+ .innerText=bot.name;
 
-  }else{
+ document.getElementById("detailAcc")
+ .innerText=getAccuracy(bot)+"%";
 
-    remaining =
-      60 -
-      now.getSeconds();
+
+ document.getElementById("detailPeriod")
+ .innerText=
+  "Period: "+(currentPeriod||"Loading...");
+
+
+ const cls =
+  bot.pred==="BIG"
+  ? "big"
+  : "small";
+
+
+ document.getElementById("detailPrediction")
+ .innerHTML=`
+
+  <span class="next-badge ${cls}">
+   ${bot.pred}
+  </span>
+
+ `;
+
+
+ const table =
+  document.getElementById("historyTable");
+
+ table.innerHTML="";
+
+
+ [...(bot.history||[])]
+ .reverse()
+ .slice(0,10)
+ .forEach(x=>{
+
+  table.innerHTML += `
+
+   <tr>
+
+    <td>
+     ${String(x.period).slice(-8)}
+    </td>
+
+    <td>
+     <b>${x.prediction}</b>
+    </td>
+
+    <td>
+     ${x.result}
+    </td>
+
+    <td class="${
+     x.status==="WIN"
+     ? "status-win"
+     : "status-loss"
+    }">
+     ${
+      x.status==="WIN"
+      ? "✓ Win"
+      : "✕ Loss"
+     }
+    </td>
+
+   </tr>
+
+  `;
+
+ });
+
+}
+
+
+/* ==========================================
+   BACK
+========================================== */
+
+function showList(){
+
+ activeBotId=null;
+
+ document.getElementById("detailPage")
+ .style.display="none";
+
+ document.getElementById("listPage")
+ .style.display="block";
+
+ renderBots();
+
+}
+
+
+/* ==========================================
+   SERVER DATA
+========================================== */
+
+async function fetchServer(){
+
+ try{
+
+  const response =
+   await fetch(
+    API_URL+"?t="+Date.now(),
+    {
+     method:"GET",
+     cache:"no-store"
+    }
+   );
+
+
+  if(!response.ok){
+
+   throw new Error(
+    "HTTP "+response.status
+   );
 
   }
 
 
-  const text =
-    String(
-      remaining
-    ).padStart(2,"0");
+  const data =
+   await response.json();
 
 
-  document.getElementById(
-    "t1"
-  ).innerText =
-    text[0];
+  if(!data.success){
+
+   throw new Error(
+    data.error || "API error"
+   );
+
+  }
 
 
-  document.getElementById(
-    "t2"
-  ).innerText =
-    text[1];
+  /*
+  ==========================================
+  MOST IMPORTANT PART
+
+  PERIOD PHONE KI CLOCK SE NAHI BANEGA.
+
+  API:
+
+  data.current.issueNumber
+
+  SERVER KA CURRENT PERIOD HAI.
+  ==========================================
+  */
+
+  const serverPeriod =
+   String(
+    data.current.issueNumber
+   );
+
+
+  /*
+  Old API response se period
+  kabhi piche nahi jayega.
+  */
+
+  if(currentPeriod){
+
+   try{
+
+    if(
+     BigInt(serverPeriod)
+     <
+     BigInt(currentPeriod)
+    ){
+
+     console.log(
+      "Older period ignored:",
+      serverPeriod
+     );
+
+     return;
+
+    }
+
+   }catch(e){}
+
+  }
+
+
+  if(
+   currentPeriod &&
+   serverPeriod !== currentPeriod
+  ){
+
+   previousPeriod =
+    currentPeriod;
+
+   processCompletedPeriod(
+    previousPeriod,
+    data.history || []
+   );
+
+  }
+
+
+  currentPeriod =
+   serverPeriod;
+
+
+  document.getElementById("period")
+   .innerText=currentPeriod;
+
+
+  if(activeBotId){
+
+   document.getElementById("detailPeriod")
+    .innerText=
+     "Period: "+currentPeriod;
+
+  }
+
+
+  /*
+  ==========================================
+  REAL SERVER HISTORY NUMBERS
+  ==========================================
+  */
+
+  const balls =
+   document.getElementById("balls");
+
+  balls.innerHTML="";
+
+
+  (data.history||[])
+   .slice(0,5)
+   .forEach(row=>{
+
+    const number =
+     Number(row.number);
+
+    if(!Number.isFinite(number))
+     return;
+
+
+    const ball =
+     document.createElement("div");
+
+    ball.className =
+     "ball "+
+     (number>=5
+      ? "ball-green"
+      : "ball-red");
+
+    ball.innerText=number;
+
+    balls.appendChild(ball);
+
+   });
+
+
+  /*
+  ==========================================
+  REMAINING TIME
+
+  Agar API bhejti hai to show hoga.
+  Period calculation yahan nahi hoti.
+  ==========================================
+  */
+
+  let seconds=null;
+
+
+  if(
+   typeof data.current.remainingSeconds
+   ==="number"
+  ){
+
+   seconds =
+    data.current.remainingSeconds;
+
+  }
+
+
+  if(
+   typeof data.current.remaining
+   ==="number"
+  ){
+
+   seconds =
+    data.current.remaining;
+
+  }
+
+
+  if(seconds!==null){
+
+   seconds =
+    Math.max(
+     0,
+     Math.floor(seconds)
+    );
+
+
+   const str =
+    String(seconds)
+    .padStart(2,"0");
+
+
+   document.getElementById("s1")
+    .innerText=str[0];
+
+   document.getElementById("s2")
+    .innerText=str[1];
+
+  }
+
+
+  document.getElementById("error")
+   .innerText="";
+
+
+ }catch(error){
+
+  console.error(error);
+
+  document.getElementById("error")
+   .innerText=
+    "Server connection error";
+
+ }
+
+}
+
+
+/* ==========================================
+   PROCESS PREVIOUS SERVER PERIOD
+========================================== */
+
+function processCompletedPeriod(
+ period,
+ history
+){
+
+ if(!period)return;
+
+
+ const result =
+  history.find(
+   x=>String(x.issueNumber)===String(period)
+  );
+
+
+ if(!result)return;
+
+
+ const number =
+  Number(result.number);
+
+
+ if(
+  !Number.isFinite(number)
+ )
+  return;
+
+
+ const actual =
+  number>=5
+  ? "BIG"
+  : "SMALL";
+
+
+ bots.forEach(bot=>{
+
+  const prediction =
+   bot.pred;
+
+
+  const status =
+   prediction===actual
+   ? "WIN"
+   : "LOSS";
+
+
+  if(!bot.history)
+   bot.history=[];
+
+
+  /*
+  Maximum 10 history
+  */
+
+  if(bot.history.length>=10)
+   bot.history.shift();
+
+
+  bot.history.push({
+
+   period:period,
+
+   prediction:prediction,
+
+   result:
+    actual+" ("+number+")",
+
+   status:status
+
+  });
+
+
+  /*
+  Demo prediction.
+  Ye guaranteed prediction nahi hai.
+  */
+
+  bot.pred =
+   Math.random()>=0.5
+   ? "BIG"
+   : "SMALL";
+
+ });
+
+
+ if(activeBotId){
+
+  renderDetail();
+
+ }else{
+
+  renderBots();
+
+ }
 
 }
 
@@ -1643,31 +2098,168 @@ function updateTimer(){
    START
 ========================================== */
 
-renderBotList();
+renderBots();
 
-fetchGameData();
-
-updateTimer();
+fetchServer();
 
 
 /*
-  API ko har 3 seconds check karo.
-*/
-setInterval(
-  fetchGameData,
-  3000
-);
+Server ko har 2 second check karega.
 
-
-/*
-  Timer har second update.
+Period local clock se calculate nahi hota.
 */
+
 setInterval(
-  updateTimer,
-  1000
+ fetchServer,
+ 2000
 );
 
 </script>
 
 </body>
-  </html>
+</html>￼Enter
+    if(!Number.isFinite(number))
+     return;
+
+
+    const ball =
+     document.createElement("div");
+
+    ball.className =
+     "ball "+
+     (number>=5
+      ? "ball-green"
+      : "ball-red");
+
+    ball.innerText=number;
+
+    balls.appendChild(ball);
+
+   });
+
+
+  /*
+  ==========================================
+  REMAINING TIME
+
+  Agar API bhejti hai to show hoga.
+  Period calculation yahan nahi hoti.
+  ==========================================
+  */
+
+  let seconds=null;
+
+
+  if(
+   typeof data.current.remainingSeconds
+   ==="number"
+  ){
+
+   seconds =
+    data.current.remainingSeconds;
+
+  }
+
+
+  if(
+   typeof data.current.remaining
+   ==="number"
+  ){
+
+   seconds =
+    data.current.remaining;
+
+  }
+
+
+  if(seconds!==null){
+
+   seconds =
+    Math.max(
+     0,
+     Math.floor(seconds)
+    );
+
+
+   const str =
+    String(seconds)
+    .padStart(2,"0");
+
+
+   document.getElementById("s1")
+    .innerText=str[0];
+
+   document.getElementById("s2")
+nnerText=str[1];
+
+  }
+
+
+  document.getElementById("error")
+   .innerText="";
+
+
+ }catch(error){
+
+  console.error(error);
+
+  document.getElementById("error")
+   .innerText=
+    "Server connection error";
+
+ }
+
+}
+
+
+/* ==========================================
+   PROCESS PREVIOUS SERVER PERIOD
+========================================== */
+
+function processCompletedPeriod(
+ period,
+ history
+){
+
+ if(!period)return;
+
+
+ const result =
+  history.find(
+   x=>String(x.issueNumber)===String(period)
+  );
+
+
+ if(!result)return;
+
+
+ const number =
+  Number(result.number);
+
+
+ if(
+  !Number.isFinite(number)
+ )
+  return;
+
+
+ const actual =
+  number>=5
+  ? "BIG"
+  : "SMALL";
+
+
+ bots.forEach(bot=>{
+
+  const prediction =
+   bot.pred;
+
+
+  const status =
+   prediction===actual
+   ? "WIN"
+   : "LOSS";
+
+
+  if(!bot.history)
+   bot.history=[];
