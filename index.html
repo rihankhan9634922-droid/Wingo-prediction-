@@ -1,383 +1,1572 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Big Small Prediction</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#07111e;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+.app{
+  width:min(100%,600px);
+  min-height:100vh;
+  margin:auto;
+  background:#091522;
+  padding-bottom:25px;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px;
+}
+.logo{
+  font-size:22px;
+  font-weight:900;
+}
+.logo span{color:#ff3040}
+.live{color:#28df91;font-size:12px;font-weight:bold}
+
+.modes{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  padding:0 10px 10px;
+}
+.mode{
+  border:0;
+  border-radius:10px;
+  padding:12px 3px;
+  background:#15253a;
+  color:#ccd8e5;
+  font-size:11px;
+  font-weight:bold;
+}
+.mode.active{
+  background:linear-gradient(135deg,#ff2839,#a50d19);
+  color:white;
+}
+
+.hero{
+  margin:0 10px 10px;
+  padding:16px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#f02d3c,#8d0d18);
+  display:flex;
+  justify-content:space-between;
+}
+.label{
+  font-size:10px;
+  opacity:.75;
+}
+.period{
+  font-size:19px;
+  font-weight:900;
+  margin-top:5px;
+}
+.timer{
+  font-size:32px;
+  font-weight:900;
+  text-align:right;
+}
+
+.card{
+  margin:10px;
+  padding:13px;
+  background:#101d2d;
+  border:1px solid #203248;
+  border-radius:12px;
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-weight:900;
+}
+.card-head small{
+  color:#8da0b5;
+}
+
+.history{
+  display:flex;
+  gap:7px;
+  overflow:hidden;
+}
+.result{
+  min-width:34px;
+  height:34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  background:#25374c;
+}
+.result.big{border:2px solid #ff4b58}
+.result.small{border:2px solid #2bd58d}
+
+.bot{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:10px;
+  margin:7px 0;
+  background:#0b1725;
+  border:1px solid #1b2d42;
+  border-radius:10px;
+  cursor:pointer;
+}
+.rank{
+  width:22px;
+  text-align:center;
+  font-weight:900;
+}
+.dp{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#24374d;
+  font-size:25px;
+}
+.bot-info{flex:1}
+.bot-name{font-weight:900}
+.bot-sub{
+  margin-top:4px;
+  color:#7f91a6;
+  font-size:10px;
+}
+.percent{
+  font-size:18px;
+  font-weight:900;
+}
+.good{color:#29df91}
+.bad{color:#ff5964}
+
+.bet-list{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000b;
+  z-index:20;
+}
+.bet-box{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(600px,100%);
+  max-height:80vh;
+  overflow:auto;
+  background:#0d1928;
+  border-radius:18px 18px 0 0;
+  padding:18px;
+}
+.close{
+  float:right;
+  border:0;
+  background:#26384d;
+  color:#fff;
+  border-radius:8px;
+  font-size:22px;
+  width:36px;
+  height:36px;
+}
+.bet{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #203247;
+  font-size:12px;
+}
+.correct{
+  color:#29df91;
+  font-weight:bold;
+}
+.wrong{
+  color:#ff5964;
+  font-weight:bold;
+}
+.note{
+  padding:5px 15px;
+  color:#71859c;
+  font-size:10px;
+  line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+  <div class="logo">BIG <span>SMALL</span></div>
+  <div class="live">● LIVE</div>
+</header>
+
+<div class="modes">
+  <button class="mode active" data-seconds="30">WinGo<br>30 Sec</button>
+  <button class="mode" data-seconds="60">WinGo<br>1 Min</button>
+  <button class="mode" data-seconds="180">WinGo<br>3 Min</button>
+  <button class="mode" data-seconds="300">WinGo<br>5 Min</button>
+</div>
+
+<section class="hero">
+  <div>
+    <div class="label">CURRENT PERIOD</div>
+    <div class="period" id="period">--</div>
+  </div>
+
+  <div>
+    <div class="label">TIME LEFT</div>
+    <div class="timer" id="timer">00:30</div>
+  </div>
+</section>
+
+<section class="card">
+
+  <div class="card-head">
+    <span>Recent Results</span>
+    <small>BIG / SMALL</small>
+  </div>
+
+  <div class="history" id="history"></div>
+
+</section>
+
+<section class="card">
+
+  <div class="card-head">
+    <span id="modeTitle">10 Prediction Bots · 30 Sec</span>
+    <small>Tap a bot</small>
+  </div>
+
+  <div id="bots"></div>
+
+</section>
+
+<div class="note">
+  Live Period/Result API को अपने authorized backend से connect करें।
+  Public GitHub Pages में private API token रखना सुरक्षित नहीं है।
+</div>
+
+</div>
+
+
+<!-- BOT DETAILS -->
+
+<div class="bet-list" id="betList">
+
+  <div class="bet-box">
+
+    <button class="close" onclick="closeBets()">×</button>
+
+    <h2 id="betTitle">Bot Bets</h2>
+
+    <div id="bets"></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   API CONFIGURATION
+========================= */
+
+/*
+  GitHub Pages में अपना PRIVATE TOKEN सीधे यहां मत डालना।
+
+  Recommended:
+
+  GitHub Page
+       ↓
+  Your Backend
+       ↓
+  Authorized API
+*/
+
+const API_URL = "";
+
+
+
+/* =========================
+   MODES
+========================= */
+
+const MODES = [30,60,180,300];
+
+let selectedMode = 30;
+
+
+/* =========================
+   BOT DATA
+========================= */
+
+const names = [
+  "Sophia",
+  "Daniel",
+  "Emma",
+  "Ryan",
+  "Olivia",
+  "Noah",
+  "Mia",
+  "Lucas",
+  "Ava",
+  "Ethan"
+];
+
+const faces = [
+  "👩🏻",
+  "👨🏻",
+  "👩🏼",
+  "👨🏼",
+  "👩🏻‍🦰",
+  "👨🏻‍🦱",
+  "👩🏽",
+  "👨🏽",
+  "👩🏼‍🦱",
+  "👨🏼‍🦰"
+];
+
+
+/*
+  हर mode के अपने अलग 10 bots
+*/
+
+const botsByMode = {};
+
+for(const mode of MODES){
+
+  botsByMode[mode] = names.map((name,index)=>({
+
+    name:name,
+
+    face:faces[index],
+
+    bets:createDemoBets(mode,index)
+
+  }));
+
+}
+
+
+
+/* =========================
+   DEMO BET CREATOR
+========================= */
+
+function createDemoBets(mode,index){
+
+  let seed = mode * (index+7);
+
+  const bets = [];
+
+  for(let i=0;i<10;i++){
+
+    seed = (seed * 9301 + 49297) % 233280;
+
+    const correct = (seed / 233280) > .40;
+
+    const prediction =
+      seed % 2 === 0
+      ? "BIG"
+      : "SMALL";
+
+    const result = correct
+      ? prediction
+      : prediction === "BIG"
+        ? "SMALL"
+        : "BIG";
+
+    bets.push({
+
+      period:"--",
+
+      prediction:prediction,
+
+      result:result,
+
+      correct:correct
+
+    });
+
+  }
+
+  return bets;
+
+}
+
+
+
+/* =========================
+   ACCURACY
+========================= */
+
+function accuracy(bot){
+
+  return bot.bets.filter(
+    bet => bet.correct
+  ).length * 10;
+
+}
+
+
+
+/* =========================
+   MODE NAME
+========================= */
+
+function modeName(seconds){
+
+  if(seconds < 60)
+    return seconds+" Sec";
+
+  return (seconds/60)+" Min";
+
+}
+
+
+
+/* =========================
+   RENDER BOTS
+========================= */
+
+function renderBots(){
+
+  const list =
+    [...botsByMode[selectedMode]]
+    .sort(
+      (a,b)=>accuracy(b)-accuracy(a)
+    );
+
+  document.getElementById("modeTitle").textContent =
+    "10 Prediction Bots · "+modeName(selectedMode);
+
+
+  document.getElementById("bots").innerHTML =
+    list.map((bot,index)=>`
+
+      <div
+        class="bot"
+        onclick="openBets(${botsByMode[selectedMode].indexOf(bot)})"
+      >
+
+        <div class="rank">
+          ${index+1}
+        </div>
+
+        <div class="dp">
+          ${bot.face}
+        </div>
+
+        <div class="bot-info">
+
+          <div class="bot-name">
+            ${bot.name}
+          </div>
+
+          <div class="bot-sub">
+            ${bot.bets.filter(x=>x.correct).length}/10 correct
+            · BIG / SMALL
+          </div>
+
+        </div>
+
+        <div
+          class="percent
+          ${accuracy(bot)>=50 ? "good" : "bad"}"
+        >
+          ${accuracy(bot)}%
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+
+/* =========================
+   BOT BET DETAILS
+========================= */
+
+function openBets(index){
+
+  const bot =
+    botsByMode[selectedMode][index];
+
+  document.getElementById("betTitle").textContent =
+    bot.face+" "+bot.name+" · "+accuracy(bot)+"%";
+
+
+  document.getElementById("bets").innerHTML =
+    bot.bets
+      .slice()
+      .reverse()
+      .map(bet=>`
+
+        <div class="bet">
+
+          <div>
+
+            <b>
+              Period ${bet.period}
+            </b>
+
+            <br>
+
+            Prediction:
+            ${bet.prediction}
+
+            <br>
+
+            Result:
+            ${bet.result}
+
+          </div>
+
+          <div
+            class="${bet.correct ? "correct":"wrong"}"
+          >
+
+            ${bet.correct
+              ? "✓ CORRECT"
+              : "✗ WRONG"}
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+
+  document.getElementById("betList").style.display =
+    "block";
+
+}
+
+
+
+function closeBets(){
+
+  document.getElementById("betList").style.display =
+    "none";
+
+}
+
+
+
+/* =========================
+   MODE BUTTONS
+========================= */
+
+document
+.querySelectorAll(".mode")
+.forEach(button=>{
+
+  button.onclick = ()=>{
+
+    document
+    .querySelectorAll(".mode")
+    .forEach(x=>
+      x.classList.remove("active")
+    );
+
+    button.classList.add("active");
+
+    selectedMode =
+      Number(button.dataset.seconds);
+
+    renderBots();
+
+    updateClock();
+
+  };
+
+});
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daman Prediction</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #0b1120; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
-    
-    /* Header */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
-    .logo { font-weight: bold; font-size: 16px; color: #ffb703; display: flex; align-items: center; gap: 5px; }
-    .nav-btns { display: flex; gap: 8px; font-size: 11px; }
-    .nav-btn { background: #1e293b; padding: 6px 10px; border-radius: 20px; color: #94a3b8; }
-    .login-btn { background: #ff2a55; padding: 6px 12px; border-radius: 20px; color: #fff; font-weight: bold; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Big Small Prediction</title>
 
-    /* Game Tabs */
-    .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
-    .tab { background: #151d30; padding: 12px 5px; border-radius: 12px; text-align: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
-    .tab.active { background: #e63946; color: #fff; font-weight: bold; }
-    .tab-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#07111e;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+.app{
+  width:min(100%,600px);
+  min-height:100vh;
+  margin:auto;
+  background:#091522;
+  padding-bottom:25px;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px;
+}
+.logo{
+  font-size:22px;
+  font-weight:900;
+}
+.logo span{color:#ff3040}
+.live{color:#28df91;font-size:12px;font-weight:bold}
 
-    /* Red Banner Section */
-    .banner { background: #d90429; border-radius: 16px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .banner-left { flex: 1; }
-    .how-to { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 15px; font-size: 11px; display: inline-block; margin-bottom: 8px; }
-    .game-name { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
-    .balls { display: flex; gap: 4px; }
-    .ball { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
-    .ball-red { background: #ff4d4d; }
-    .ball-green { background: #2ec4b6; }
+.modes{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  padding:0 10px 10px;
+}
+.mode{
+  border:0;
+  border-radius:10px;
+  padding:12px 3px;
+  background:#15253a;
+  color:#ccd8e5;
+  font-size:11px;
+  font-weight:bold;
+}
+.mode.active{
+  background:linear-gradient(135deg,#ff2839,#a50d19);
+  color:white;
+}
 
-    .banner-right { text-align: right; border-left: 1px dashed rgba(255,255,255,0.3); padding-left: 12px; }
-    .timer-title { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
-    .timer-boxes { display: flex; gap: 3px; font-size: 18px; font-weight: bold; justify-content: flex-end; }
-    .t-box { background: #fff; color: #000; padding: 2px 6px; border-radius: 4px; }
-    .period-id { font-size: 11px; margin-top: 6px; letter-spacing: 0.5px; opacity: 0.9; }
+.hero{
+  margin:0 10px 10px;
+  padding:16px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#f02d3c,#8d0d18);
+  display:flex;
+  justify-content:space-between;
+}
+.label{
+  font-size:10px;
+  opacity:.75;
+}
+.period{
+  font-size:19px;
+  font-weight:900;
+  margin-top:5px;
+}
+.timer{
+  font-size:32px;
+  font-weight:900;
+  text-align:right;
+}
 
-    /* Ranking Section */
-    .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
-    .bot-list { display: flex; flex-direction: column; gap: 8px; }
-    .bot-card { background: #151d30; border: 1px solid #1e293b; border-radius: 12px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    .bot-card.selected { border-color: #ffb703; }
-    .bot-left { display: flex; align-items: center; gap: 10px; }
-    .rank-num { width: 20px; height: 20px; border-radius: 50%; background: #2b374e; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
-    .rank-1 { background: #ffb703; color: #000; }
-    .rank-2 { background: #cbd5e1; color: #000; }
-    .rank-3 { background: #b45309; color: #fff; }
-    .bot-avatar { width: 32px; height: 32px; border-radius: 50%; background: #ff4d4d; }
-    .bot-name { font-size: 13px; font-weight: bold; }
-    .bot-acc { font-size: 12px; color: #2ec4b6; font-weight: bold; margin-left: 5px; }
-    .history-dots { display: flex; gap: 3px; margin-top: 3px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; font-size: 7px; display: flex; align-items: center; justify-content: center; }
-    .dot-win { background: #2ec4b6; color: #fff; }
-    .dot-loss { background: #e63946; color: #fff; }
+.card{
+  margin:10px;
+  padding:13px;
+  background:#101d2d;
+  border:1px solid #203248;
+  border-radius:12px;
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-weight:900;
+}
+.card-head small{
+  color:#8da0b5;
+}
 
-    /* Detail View */
-    .bot-detail { background: #151d30; border-radius: 12px; padding: 12px; margin-top: 15px; }
-    .detail-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .detail-avatar { width: 45px; height: 45px; border-radius: 50%; background: #ff4d4d; }
-    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
-    .bets-table th { text-align: left; color: #64748b; padding: 6px 0; font-weight: normal; }
-    .bets-table td { padding: 6px 0; border-top: 1px solid #1e293b; }
-    .badge-win { background: rgba(46, 196, 182, 0.2); color: #2ec4b6; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-  </style>
+.history{
+  display:flex;
+  gap:7px;
+  overflow:hidden;
+}
+.result{
+  min-width:34px;
+  height:34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  background:#25374c;
+}
+.result.big{border:2px solid #ff4b58}
+.result.small{border:2px solid #2bd58d}
+
+.bot{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:10px;
+  margin:7px 0;
+  background:#0b1725;
+  border:1px solid #1b2d42;
+  border-radius:10px;
+  cursor:pointer;
+}
+.rank{
+  width:22px;
+  text-align:center;
+  font-weight:900;
+}
+.dp{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#24374d;
+  font-size:25px;
+}
+.bot-info{flex:1}
+.bot-name{font-weight:900}
+.bot-sub{
+  margin-top:4px;
+  color:#7f91a6;
+  font-size:10px;
+}
+.percent{
+  font-size:18px;
+  font-weight:900;
+}
+.good{color:#29df91}
+.bad{color:#ff5964}
+
+.bet-list{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000b;
+  z-index:20;
+}
+.bet-box{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(600px,100%);
+  max-height:80vh;
+  overflow:auto;
+  background:#0d1928;
+  border-radius:18px 18px 0 0;
+  padding:18px;
+}
+.close{
+  float:right;
+  border:0;
+  background:#26384d;
+  color:#fff;
+  border-radius:8px;
+  font-size:22px;
+  width:36px;
+  height:36px;
+}
+.bet{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #203247;
+  font-size:12px;
+}
+.correct{
+  color:#29df91;
+  font-weight:bold;
+}
+.wrong{
+  color:#ff5964;
+  font-weight:bold;
+}
+.note{
+  padding:5px 15px;
+  color:#71859c;
+  font-size:10px;
+  line-height:1.5;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="logo">👑 DAMAN PREDICTION</div>
-    <div class="nav-btns">
-      <span class="nav-btn">Home</span>
-      <span class="nav-btn">History</span>
-      <span class="login-btn">Login</span>
-    </div>
+<div class="app">
+
+<header class="header">
+  <div class="logo">BIG <span>SMALL</span></div>
+  <div class="live">● LIVE</div>
+</header>
+
+<div class="modes">
+  <button class="mode active" data-seconds="30">WinGo<br>30 Sec</button>
+  <button class="mode" data-seconds="60">WinGo<br>1 Min</button>
+  <button class="mode" data-seconds="180">WinGo<br>3 Min</button>
+  <button class="mode" data-seconds="300">WinGo<br>5 Min</button>
+</div>
+
+<section class="hero">
+  <div>
+    <div class="label">CURRENT PERIOD</div>
+    <div class="period" id="period">--</div>
   </div>
 
-  <!-- Game Tabs -->
-  <div class="game-tabs">
-    <div class="tab active"><span class="tab-icon">⏱️</span>WinGo 30Sec</div>
-    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 1 Min</div>
-    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 3 Min</div>
-    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 5 Min</div>
+  <div>
+    <div class="label">TIME LEFT</div>
+    <div class="timer" id="timer">00:30</div>
+  </div>
+</section>
+
+<section class="card">
+
+  <div class="card-head">
+    <span>Recent Results</span>
+    <small>BIG / SMALL</small>
   </div>
 
-  <!-- Banner -->
-  <div class="banner">
-    <div class="banner-left">
-      <div class="how-to">📖 How to play</div>
-      <div class="game-name">WinGo 30sec</div>
-      <div class="balls" id="recentBalls"></div>
-    </div>
-    <div class="banner-right">
-      <div class="timer-title">Time remaining</div>
-      <div class="timer-boxes">
-        <span class="t-box">0</span><span class="t-box">0</span>:<span class="t-box" id="t1">0</span><span class="t-box" id="t2">0</span>
-      </div>
-      <div class="period-id" id="periodId">Loading...</div>
-    </div>
+  <div class="history" id="history"></div>
+
+</section>
+
+<section class="card">
+
+  <div class="card-head">
+    <span id="modeTitle">10 Prediction Bots · 30 Sec</span>
+    <small>Tap a bot</small>
   </div>
 
-  <!-- Bots Ranking -->
-  <div class="section-title">🏆 Bots Ranking</div>
-  <div class="bot-list" id="botListContainer"></div>
+  <div id="bots"></div>
 
-  <!-- Selected Bot Details -->
-  <div class="bot-detail">
-    <div class="detail-header">
-      <div class="detail-avatar"></div>
-      <div>
-        <div style="font-size: 16px; font-weight: bold;" id="selectedBotName">Sophia</div>
-        <div style="font-size: 11px; color: #2ec4b6;" id="selectedBotAcc">100% Accuracy</div>
-      </div>
-    </div>
-    <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">Last 10 Bets</div>
-    <table class="bets-table">
-      <thead>
-        <tr>
-          <th>Period</th>
-          <th>Bot Prediction</th>
-          <th>Result</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="betsHistoryTable"></tbody>
-    </table>
+</section>
+
+<div class="note">
+  Live Period/Result API को अपने authorized backend से connect करें।
+  Public GitHub Pages में private API token रखना सुरक्षित नहीं है।
+</div>
+
+</div>
+
+
+<!-- BOT DETAILS -->
+
+<div class="bet-list" id="betList">
+
+  <div class="bet-box">
+
+    <button class="close" onclick="closeBets()">×</button>
+
+    <h2 id="betTitle">Bot Bets</h2>
+
+    <div id="bets"></div>
+
   </div>
+
+</div>
+
 
 <script>
-  const API_URL = "https://api.wingobot.com/v2/30-sec-game-history";
-  const TOKEN = "ws_64febebc8e74a5154ebb1d72a30ea4397265d56772b0ec5119b160d7286b0182";
 
-  const botsData = [
-    { name: "Sophia", acc: "100%", rank: 1, dots: ["✓","✓","✓","✓","✓","✓","✓"] },
-    { name: "Daniel", acc: "90%", rank: 2, dots: ["✓","✓","✓","✓","✓","✓","✕"] },
-    { name: "Emma", acc: "80%", rank: 3, dots: ["✓","✓","✓","✓","✓","✕","✓"] },
-    { name: "Ryan", acc: "70%", rank: 4, dots: ["✓","✓","✓","✕","✕","✕","✕"] },
-    { name: "Olivia", acc: "60%", rank: 5, dots: ["✓","✓","✓","✕","✕","✕","✓"] }
-  ];
+/* =========================
+   API CONFIGURATION
+========================= */
 
-  function renderBots() {
-    const container = document.getElementById('botListContainer');
-    container.innerHTML = '';
-    botsData.forEach((bot, index) => {
-      let rankClass = bot.rank <= 3 ? `rank-${bot.rank}` : '';
-      let dotsHTML = bot.dots.map(d => `<div class="dot ${d==='✓'?'dot-win':'dot-loss'}">${d}</div>`).join('');
-      
-      container.innerHTML += `
-        <div class="bot-card ${index===0?'selected':''}" onclick="selectBot('${bot.name}', '${bot.acc}')">
-          <div class="bot-left">
-            <div class="rank-num ${rankClass}">${bot.rank}</div>
-            <div class="bot-avatar"></div>
-            <div>
-              <div><span class="bot-name">${bot.name}</span><span class="bot-acc">${bot.acc}</span></div>
-              <div class="history-dots">${dotsHTML}</div>
-            </div>
-          </div>
-          <div style="color: #64748b;">›</div>
-        </div>
-      `;
+/*
+  GitHub Pages में अपना PRIVATE TOKEN सीधे यहां मत डालना।
+
+  Recommended:
+
+  GitHub Page
+       ↓
+  Your Backend
+       ↓
+  Authorized API
+*/
+
+const API_URL = "";
+
+
+
+/* =========================
+   MODES
+========================= */
+
+const MODES = [30,60,180,300];
+
+let selectedMode = 30;
+
+
+/* =========================
+   BOT DATA
+========================= */
+
+const names = [
+  "Sophia",
+  "Daniel",
+  "Emma",
+  "Ryan",
+  "Olivia",
+  "Noah",
+  "Mia",
+  "Lucas",
+  "Ava",
+  "Ethan"
+];
+
+const faces = [
+  "👩🏻",
+  "👨🏻",
+  "👩🏼",
+  "👨🏼",
+  "👩🏻‍🦰",
+  "👨🏻‍🦱",
+  "👩🏽",
+  "👨🏽",
+  "👩🏼‍🦱",
+  "👨🏼‍🦰"
+];
+
+
+/*
+  हर mode के अपने अलग 10 bots
+*/
+
+const botsByMode = {};
+
+for(const mode of MODES){
+
+  botsByMode[mode] = names.map((name,index)=>({
+
+    name:name,
+
+    face:faces[index],
+
+    bets:createDemoBets(mode,index)
+
+  }));
+
+}
+
+
+
+/* =========================
+   DEMO BET CREATOR
+========================= */
+
+function createDemoBets(mode,index){
+
+  let seed = mode * (index+7);
+
+  const bets = [];
+
+  for(let i=0;i<10;i++){
+
+    seed = (seed * 9301 + 49297) % 233280;
+
+    const correct = (seed / 233280) > .40;
+
+    const prediction =
+      seed % 2 === 0
+      ? "BIG"
+      : "SMALL";
+
+    const result = correct
+      ? prediction
+      : prediction === "BIG"
+        ? "SMALL"
+        : "BIG";
+
+    bets.push({
+
+      period:"--",
+
+      prediction:prediction,
+
+      result:result,
+
+      correct:correct
+
     });
+
   }
 
-  function selectBot(name, acc) {
-    document.getElementById('selectedBotName').innerText = name;
-    document.getElementById('selectedBotAcc').innerText = acc + " Accuracy";
+  return bets;
+
+}
+
+
+
+/* =========================
+   ACCURACY
+========================= */
+
+function accuracy(bot){
+
+  return bot.bets.filter(
+    bet => bet.correct
+  ).length * 10;
+
+}
+
+
+
+/* =========================
+   MODE NAME
+========================= */
+
+function modeName(seconds){
+
+  if(seconds < 60)
+    return seconds+" Sec";
+
+  return (seconds/60)+" Min";
+
+}
+
+
+
+/* =========================
+   RENDER BOTS
+========================= */
+
+function renderBots(){
+
+  const list =
+    [...botsByMode[selectedMode]]
+    .sort(
+      (a,b)=>accuracy(b)-accuracy(a)
+    );
+
+  document.getElementById("modeTitle").textContent =
+    "10 Prediction Bots · "+modeName(selectedMode);
+
+
+  document.getElementById("bots").innerHTML =
+    list.map((bot,index)=>`
+
+      <div
+        class="bot"
+        onclick="openBets(${botsByMode[selectedMode].indexOf(bot)})"
+      >
+
+        <div class="rank">
+          ${index+1}
+        </div>
+
+        <div class="dp">
+          ${bot.face}
+        </div>
+
+        <div class="bot-info">
+
+          <div class="bot-name">
+            ${bot.name}
+          </div>
+
+          <div class="bot-sub">
+            ${bot.bets.filter(x=>x.correct).length}/10 correct
+            · BIG / SMALL
+          </div>
+
+        </div>
+
+        <div
+          class="percent
+          ${accuracy(bot)>=50 ? "good" : "bad"}"
+        >
+          ${accuracy(bot)}%
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+
+/* =========================
+   BOT BET DETAILS
+========================= */
+
+function openBets(index){
+
+  const bot =
+    botsByMode[selectedMode][index];
+
+  document.getElementById("betTitle").textContent =
+    bot.face+" "+bot.name+" · "+accuracy(bot)+"%";
+
+
+  document.getElementById("bets").innerHTML =
+    bot.bets
+      .slice()
+      .reverse()
+      .map(bet=>`
+
+        <div class="bet">
+
+          <div>
+
+            <b>
+              Period ${bet.period}
+            </b>
+
+            <br>
+
+            Prediction:
+            ${bet.prediction}
+
+            <br>
+
+            Result:
+            ${bet.result}
+
+          </div>
+
+          <div
+            class="${bet.correct ? "correct":"wrong"}"
+          >
+
+            ${bet.correct
+              ? "✓ CORRECT"
+              : "✗ WRONG"}
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+
+  document.getElementById("betList").style.display =
+    "block";
+
+}
+
+
+
+function closeBets(){
+
+  document.getElementById("betList").style.display =
+    "none";
+
+}
+
+
+
+/* =========================
+   MODE BUTTONS
+========================= */
+
+document
+.querySelectorAll(".mode")
+.forEach(button=>{
+
+  button.onclick = ()=>{
+
+    document
+    .querySelectorAll(".mode")
+    .forEach(x=>
+      x.classList.remove("active")
+    );
+
+    button.classList.add("active");
+
+    selectedMode =
+      Number(button.dataset.seconds);
+
+    renderBots();
+
+    updateClock();
+
+  };
+
+});
+
+
+
+/* =========================
+   HISTORY
+========================= */
+
+function renderHistory(numbers){
+
+  if(!numbers)
+    numbers = [2,7,4,9,1,8,3,6,5,0];
+
+
+  document.getElementById("history").innerHTML =
+    numbers
+      .slice(0,10)
+      .map(number=>`
+
+        <div
+          class="result
+          ${Number(number)>=5 ? "big":"small"}"
+        >
+          ${number}
+        </div>
+
+      `)
+      .join("");
+
+}
+
+
+
+/* =========================
+   PERIOD + TIMER
+========================= */
+
+let serverTime = null;
+let currentPeriod = "--";
+
+
+function updateClock(){
+
+  let seconds;
+
+
+  if(serverTime){
+
+    seconds =
+      Math.floor(
+        new Date(serverTime).getTime()/1000
+      );
+
+  }else{
+
+    seconds =
+      Math.floor(Date.now()/1000);
+
   }
 
-  async function fetchLiveDamanData() {
-    try {
-      const response = await fetch(API_URL, {
-        headers: { "Authorization": `Bearer ${TOKEN}` }
-      });
-      const data = await response.json();
 
-      if (data.success) {
-        // API से मिली लास्ट पीरियड आईडी में +1 जोड़कर करंट लाइव पीरियड दिखाया गया है
-        let lastPeriod = BigInt(data.current.issueNumber);
-        let currentPeriod = lastPeriod + 1n;
-        document.getElementById('periodId').innerText = currentPeriod.toString();
+  const remaining =
+    selectedMode -
+    (seconds % selectedMode);
 
-        // Recent Balls Update
-        let ballsHTML = '';
-        data.history.slice(0, 5).forEach(row => {
-          let bg = row.colour === 'green' ? 'ball-green' : 'ball-red';
-          ballsHTML += `<div class="ball ${bg}">${row.number}</div>`;
-        });
-        document.getElementById('recentBalls').innerHTML = ballsHTML;
 
-        // Bets History Table Update
-        let rowsHTML = '';
-        data.history.slice(0, 8).forEach(row => {
-          rowsHTML += `
-            <tr>
-              <td>${row.issueNumber}</td>
-              <td><span class="ball ${row.colour === 'green' ? 'ball-green' : 'ball-red'}" style="display:inline-flex;">${row.number}</span></td>
-              <td><span class="ball ${row.colour === 'green' ? 'ball-green' : 'ball-red'}" style="display:inline-flex;">${row.number}</span></td>
-              <td><span class="badge-win">Win</span></td>
-            </tr>
-          `;
-        });
-        document.getElementById('betsHistoryTable').innerHTML = rowsHTML;
-      }
-    } catch (e) {
-      console.log("CORS / API Fetch Error");
-    }
+  document.getElementById("timer").textContent =
+    "00:"+String(
+      remaining % 60
+    ).padStart(2,"0");
+
+
+  document.getElementById("period").textContent =
+    currentPeriod;
+
+}
+
+
+
+/* =========================
+   LIVE API PARSER
+========================= */
+
+function parseLiveData(data){
+
+  if(!data)
+    return;
+
+
+  if(data.success === false)
+    return;
+
+
+  /*
+    आपके दिए API का Period:
+
+    data.current.issueNumber
+  */
+
+  if(data.current &&
+     data.current.issueNumber){
+
+    currentPeriod =
+      data.current.issueNumber;
+
   }
 
-  // Live Timer
-  let timeLeft = 30;
-  setInterval(() => {
-    timeLeft--;
-    if (timeLeft < 0) {
-      timeLeft = 30;
-      fetchLiveDamanData();
-    }
-    let s = timeLeft.toString().padStart(2, '0');
-    document.getElementById('t1').innerText = s[0];
-    document.getElementById('t2').innerText = s[1];
-  }, 1000);
 
-  renderBots();
-  fetchLiveDamanData();
-  selectBot('Sophia', '100%');
+  /*
+    History
+  */
+
+  if(Array.isArray(data.history)){
+
+    const numbers =
+      data.history.map(
+        row => row.number
+      );
+
+    renderHistory(numbers);
+
+
+    /*
+      नई result आने पर सभी bots की
+      latest 10 bets maintain करने
+      का स्थान यहां है।
+    */
+
+  }
+
+
+  /*
+    अगर backend serverTime देता है,
+    तो उसी से timer synchronize होगा।
+  */
+
+  if(data.serverTime){
+
+    serverTime =
+      data.serverTime;
+
+  }else if(
+    data.stats &&
+    data.stats.last_updated
+  ){
+
+    serverTime =
+      data.stats.last_updated;
+
+  }
+
+
+  updateClock();
+
+}
+
+
+
+/* =========================
+   FETCH LIVE DATA
+========================= */
+
+async function fetchLiveData(){
+
+  if(!API_URL)
+    return;
+
+
+  try{
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method:"GET",
+          cache:"no-store"
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    parseLiveData(data);
+
+
+  }catch(error){
+
+    console.log(
+      "API error:",
+      error
+    );
+
+  }
+
+}
+
+
+
+/* =========================
+   START
+========================= */
+
+renderHistory();
+
+renderBots();
+
+updateClock();
+
+
+setInterval(
+  updateClock,
+  250
+);
+
+
+setInterval(
+  fetchLiveData,
+  1000
+);
+
+
+fetchLiveData();
+
 </script>
+
 </body>
-</html>
-￼Enter  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daman Prediction</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #0b1120; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
-    
-    /* Header */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
-    .logo { font-weight: bold; font-size: 16px; color: #ffb703; display: flex; align-items: center; gap: 5px; }
-    .nav-btns { display: flex; gap: 8px; font-size: 11px; }
-    .nav-btn { background: #1e293b; padding: 6px 10px; border-radius: 20px; color: #94a3b8; }
-    .login-btn { background: #ff2a55; padding: 6px 12px; border-radius: 20px; color: #fff; font-weight: bold; }
+</html>￼Enter
+/* =========================
+   HISTORY
+========================= */
 
-    /* Game Tabs */
-    .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
-    .tab { background: #151d30; padding: 12px 5px; border-radius: 12px; text-align: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
-    .tab.active { background: #e63946; color: #fff; font-weight: bold; }
-    .tab-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+function renderHistory(numbers){
 
-    /* Red Banner Section */
-    .banner { background: #d90429; border-radius: 16px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .banner-left { flex: 1; }
-    .how-to { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 15px; font-size: 11px; display: inline-block; margin-bottom: 8px; }
-    .game-name { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
-    .balls { display: flex; gap: 4px; }
-    .ball { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
-    .ball-red { background: #ff4d4d; }
-    .ball-green { background: #2ec4b6; }
+  if(!numbers)
+    numbers = [2,7,4,9,1,8,3,6,5,0];
 
-    .banner-right { text-align: right; border-left: 1px dashed rgba(255,255,255,0.3); padding-left: 12px; }
-    .timer-title { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
-    .timer-boxes { display: flex; gap: 3px; font-size: 18px; font-weight: bold; justify-content: flex-end; }
-    .t-box { background: #fff; color: #000; padding: 2px 6px; border-radius: 4px; }
-    .period-id { font-size: 11px; margin-top: 6px; letter-spacing: 0.5px; opacity: 0.9; }
 
-    /* Ranking Section */
-    .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
-    .bot-list { display: flex; flex-direction: column; gap: 8px; }
-    .bot-card { background: #151d30; border: 1px solid #1e293b; border-radius: 12px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    .bot-card.selected { border-color: #ffb703; }
-    .bot-left { display: flex; align-items: center; gap: 10px; }
-    .rank-num { width: 20px; height: 20px; border-radius: 50%; background: #2b374e; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
-    .rank-1 { background: #ffb703; color: #000; }
-    .rank-2 { background: #cbd5e1; color: #000; }
-    .rank-3 { background: #b45309; color: #fff; }
-    .bot-avatar { width: 32px; height: 32px; border-radius: 50%; background: #ff4d4d; }
-    .bot-name { font-size: 13px; font-weight: bold; }
-    .bot-acc { font-size: 12px; color: #2ec4b6; font-weight: bold; margin-left: 5px; }
-    .history-dots { display: flex; gap: 3px; margin-top: 3px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; font-size: 7px; display: flex; align-items: center; justify-content: center; }
-    .dot-win { background: #2ec4b6; color: #fff; }
-    .dot-loss { background: #e63946; color: #fff; }
+  document.getElementById("history").innerHTML =
+    numbers
+      .slice(0,10)
+      .map(number=>`
 
-    /* Detail View */
-    .bot-detail { background: #151d30; border-radius: 12px; padding: 12px; margin-top: 15px; }
-    .detail-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .detail-avatar { width: 45px; height: 45px; border-radius: 50%; background: #ff4d4d; }
-    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
-    .bets-table th { text-align: left; color: #64748b; padding: 6px 0; font-weight: normal; }
-    .bets-table td { padding: 6px 0; border-top: 1px solid #1e293b; }
-    .badge-win { background: rgba(46, 196, 182, 0.2); color: #2ec4b6; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-  </style>
-</head>
-<body>
+        <div
+          class="result
+          ${Number(number)>=5 ? "big":"small"}"
+        >
+          ${number}
+        </div>
 
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="logo">👑 DAMAN PREDICTION</div>
-    <div class="nav-btns">
-      <span class="nav-btn">Home</span>
-      <span class="nav-btn">History</span>
-      <span class="login-btn">Login</span>
-    </div>
-  </div>
+      `)
+      .join("");
 
- Game Tabs -->
-  <div class="game-tabs">
-    <div class="tab active"><span class="tab-icon">⏱️</span>WinGo 30Sec</div>
-    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 1 Min</div>
-    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 3 Min</div>
-    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 5 Min</div>
-  </div>
+}
 
-  <!-- Banner -->
-  <div class="banner">
-    <div class="banner-left">
-      <div class="how-to">📖 How to play</div>
-      <div class="game-name">WinGo 30sec</div>
-      <div class="balls" id="recentBalls"></div>
-    </div>
-    <div class="banner-right">
-      <div class="timer-title">Time remaining</div>
-      <div class="timer-boxes">
-        <span class="t-box">0</span><span class="t-box">0</span>:<span class="t-box" id="t1">0</span><span class="t-box" id="t2">0</span>
-      </div>
-      <div class="period-id" id="periodId">Loading...</div>
-    </div>
-  </div>
 
-  <!-- Bots Ranking -->
-  <div class="section-title">🏆 Bots Ranking</div>
-  <div class="bot-list" id="botListContainer"></div>
 
-  <!-- Selected Bot Details -->
-  <div class="bot-detail">
-    <div class="detail-header">
-      <div class="detail-avatar"></div>
-      <div>
-        <div style="font-size: 16px; font-weight: bold;" id="selectedBotName">Sophia</div>
-        <div style="font-size: 11px; color: #2ec4b6;" id="selectedBotAcc">100% Accuracy</div>
-      </div>
-    </div>
-    <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">Last 10 Bets</div>
-    <table class="bets-table">
-      <thead>
-        <tr>
-          <th>Period</th>
-          <th>Bot Prediction</th>
-          <th>Result</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="betsHistoryTable"></tbody>
-    </table>
-  </div>
+/* =========================
+   PERIOD + TIMER
+========================= */
 
-<script>
-  const API_URL = "https://api.wingobot.com/v2/30-sec-game-history";
-  const TOKEN = "ws_64febebc8e74a5154ebb1d72a30ea4397265d56772b0ec5119b160d7286b0182";
+let serverTime = null;
+let currentPeriod = "--";
 
-  const botsData = [
-    { name: "Sophia", acc: "100%", rank: 1, dots: ["✓","✓","✓","✓","✓","✓","✓"] },
-    { name: "Daniel", acc: "90%", rank: 2, dots: ["✓","✓","✓","✓","✓","✓","✕"] },
-    { name: "Emma", acc: "80%", rank: 3, dots: ["✓","✓","✓","✓","✓","✕","✓"] },
-    { name: "Ryan", acc: "70%", rank: 4, dots: ["✓","✓","✓","✕","✕","✕","✕"] },
-    { name: "Olivia", acc: "60%", rank: 5, dots: ["✓","✓","✓","✕","✕","✕","✓"] }
-  ];
 
-  function renderBots() {
-    const container = document.getElementById('botListContainer');
-    container.innerHTML = '';
-    botsData.forEach((bot, index) => {
-      let rankClass = bot.rank <= 3 ? `rank-${bot.rank}` : '';
-      let dotsHTML = bot.dots.map(d => `<div class="dot ${d==='✓'?'dot-win':'dot-loss'}">${d}</div>`).join('');
-      
-      container.innerHTML += `
-        <div class="bot-card ${index===0?'selected':''}" onclick="selectBot('${bot.name}', '${bot.acc}')">
-          <div class="bot-left">
-            <div class="rank-num ${rankClass}">${bot.rank}</div>
-            <div class="bot-avatar"></div>
+function updateClock(){
+
+  let seconds;
+
+
+  if(serverTime){
+
+    seconds =
+      Math.floor(
+        new Date(serverTime).getTime()/1000
+      );
+
+  }else{
+
+    seconds =
+      Math.floor(Date.now()/1000);
+
+  }
+
+
+  const remaining =
+    selectedMode -
+    (seconds % selectedMode);
+
+
+  document.getElementById("timer").textContent =
+    "00:"+String(
+      remaining % 60
+    ).padStart(2,"0");
+
+
+  document.getElementById("period").textContent =
+    currentPeriod;
+
+}
+
+
+=======================
+   LIVE API PARSER
+========================= */
+
+function parseLiveData(data){
+
+  if(!data)
+    return;
+
+
+  if(data.success === false)
+    return;
+
+
+  /*
+    आपके दिए API का Period:
+
+    data.current.issueNumber
+  */
+
+  if(data.current &&
+     data.current.issueNumber){
+
+    currentPeriod =
+      data.current.issueNumber;
+
+  }
+
+
+  /*
+    History
+  */
+
+  if(Array.isArray(data.history)){
+
+    const numbers =
+      data.history.map(
+        row => row.number
+      );
+
+    renderHistory(numbers);
+
+
+    /*
+      नई result आने पर सभी bots की
+      latest 10 bets maintain करने
+      का स्थान यहां है।
+    */
+
+  }
+
+
+  /*
+    अगर backend serverTime देता है,
+    तो उसी से timer synchronize होगा।
+  */
+
+  if(data.serverTime){
+
+    serverTime =
+      data.serverTime;
+
+  }else if(
+    data.stats &&
+    data.stats.last_updated
+  ){
+
+    serverTime =
+      data.stats.last_updated;
+
+  }
+
+
+  updateClock();
