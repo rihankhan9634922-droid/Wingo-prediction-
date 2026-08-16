@@ -1,54 +1,176 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daman Live Prediction</title>
+  <title>Daman Prediction</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; padding: 15px; }
-    .app-container { width: 100%; max-width: 480px; background: #1e293b; border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-    .header h1 { font-size: 20px; color: #38bdf8; }
-    .card { background: #0f172a; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; text-align: center; }
-    .timer-display { font-size: 36px; font-weight: bold; color: #4ade80; margin: 5px 0; }
-    .period-id { font-size: 15px; color: #94a3b8; font-weight: bold; }
-    .bots-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-    .bot-card { background: #334155; padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .pred-badge { font-weight: bold; padding: 6px 12px; border-radius: 6px; font-size: 14px; }
-    .pred-BIG { background: #fbbf24; color: #0f172a; }
-    .pred-SMALL { background: #a855f7; color: #fff; }
-    .status-bar { font-size: 12px; color: #38bdf8; margin-top: 10px; text-align: center; font-weight: 500; }
-    .history-box { background: #0f172a; border-radius: 10px; padding: 10px; font-size: 12px; color: #cbd5e1; max-height: 120px; overflow-y: auto; }
-    .history-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #1e293b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0b1120; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
+    
+    /* Header */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+    .logo { font-weight: bold; font-size: 16px; color: #ffb703; display: flex; align-items: center; gap: 5px; }
+    .nav-btns { display: flex; gap: 8px; font-size: 11px; }
+    .nav-btn { background: #1e293b; padding: 6px 10px; border-radius: 20px; color: #94a3b8; }
+    .login-btn { background: #ff2a55; padding: 6px 12px; border-radius: 20px; color: #fff; font-weight: bold; }
+
+    /* Game Tabs */
+    .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
+    .tab { background: #151d30; padding: 12px 5px; border-radius: 12px; text-align: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
+    .tab.active { background: #e63946; color: #fff; font-weight: bold; }
+    .tab-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+
+    /* Red Banner Section */
+    .banner { background: #d90429; border-radius: 16px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .banner-left { flex: 1; }
+    .how-to { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 15px; font-size: 11px; display: inline-block; margin-bottom: 8px; }
+    .game-name { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+    .balls { display: flex; gap: 4px; }
+    .ball { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+    .ball-red { background: #ff4d4d; }
+    .ball-green { background: #2ec4b6; }
+
+    .banner-right { text-align: right; border-left: 1px dashed rgba(255,255,255,0.3); padding-left: 12px; }
+    .timer-title { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
+    .timer-boxes { display: flex; gap: 3px; font-size: 18px; font-weight: bold; justify-content: flex-end; }
+    .t-box { background: #fff; color: #000; padding: 2px 6px; border-radius: 4px; }
+    .period-id { font-size: 11px; margin-top: 6px; letter-spacing: 0.5px; opacity: 0.9; }
+
+    /* Ranking Section */
+    .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+    .bot-list { display: flex; flex-direction: column; gap: 8px; }
+    .bot-card { background: #151d30; border: 1px solid #1e293b; border-radius: 12px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .bot-card.selected { border-color: #ffb703; }
+    .bot-left { display: flex; align-items: center; gap: 10px; }
+    .rank-num { width: 20px; height: 20px; border-radius: 50%; background: #2b374e; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+    .rank-1 { background: #ffb703; color: #000; }
+    .rank-2 { background: #cbd5e1; color: #000; }
+    .rank-3 { background: #b45309; color: #fff; }
+    .bot-avatar { width: 32px; height: 32px; border-radius: 50%; background: #ff4d4d; }
+    .bot-name { font-size: 13px; font-weight: bold; }
+    .bot-acc { font-size: 12px; color: #2ec4b6; font-weight: bold; margin-left: 5px; }
+    .history-dots { display: flex; gap: 3px; margin-top: 3px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; font-size: 7px; display: flex; align-items: center; justify-content: center; }
+    .dot-win { background: #2ec4b6; color: #fff; }
+    .dot-loss { background: #e63946; color: #fff; }
+
+    /* Detail View */
+    .bot-detail { background: #151d30; border-radius: 12px; padding: 12px; margin-top: 15px; }
+    .detail-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .detail-avatar { width: 45px; height: 45px; border-radius: 50%; background: #ff4d4d; }
+    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+    .bets-table th { text-align: left; color: #64748b; padding: 6px 0; font-weight: normal; }
+    .bets-table td { padding: 6px 0; border-top: 1px solid #1e293b; }
+    .badge-win { background: rgba(46, 196, 182, 0.2); color: #2ec4b6; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
   </style>
 </head>
 <body>
 
-<div class="app-container">
-  <div class="header">
-    <h1>DAMAN WINGO 30-SEC LIVE</h1>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="logo">👑 DAMAN PREDICTION</div>
+    <div class="nav-btns">
+      <span class="nav-btn">Home</span>
+      <span class="nav-btn">History</span>
+      <span class="login-btn">Login</span>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="period-id">PERIOD: <span id="period" style="color: #38bdf8;">Loading...</span></div>
-    <div style="font-size: 13px; color: #94a3b8; margin-top: 5px;">TIME LEFT</div>
-    <div class="timer-display" id="timer">00:30</div>
+  <!-- Game Tabs -->
+  <div class="game-tabs">
+    <div class="tab active"><span class="tab-icon">⏱️</span>WinGo 30Sec</div>
+    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 1 Min</div>
+    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 3 Min</div>
+    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 5 Min</div>
   </div>
 
-  <div style="font-size: 15px; margin-bottom: 10px; color: #cbd5e1; font-weight: bold;">Bot Predictions</div>
-  <div class="bots-list" id="botsContainer"></div>
+  <!-- Banner -->
+  <div class="banner">
+    <div class="banner-left">
+      <div class="how-to">📖 How to play</div>
+      <div class="game-name">WinGo 30sec</div>
+      <div class="balls" id="recentBalls"></div>
+    </div>
+    <div class="banner-right">
+      <div class="timer-title">Time remaining</div>
+      <div class="timer-boxes">
+        <span class="t-box">0</span><span class="t-box">0</span>:<span class="t-box" id="t1">0</span><span class="t-box" id="t2">0</span>
+      </div>
+      <div class="period-id" id="periodId">Loading...</div>
+    </div>
+  </div>
 
-  <div style="font-size: 15px; margin-bottom: 10px; color: #cbd5e1; font-weight: bold;">Game History</div>
-  <div class="history-box" id="historyContainer">Connecting...</div>
+  <!-- Bots Ranking -->
+  <div class="section-title">🏆 Bots Ranking</div>
+  <div class="bot-list" id="botListContainer"></div>
 
-  <div class="status-bar" id="apiStatus">Connecting to Server...</div>
-</div>
+  <!-- Selected Bot Details -->
+  <div class="bot-detail">
+    <div class="detail-header">
+      <div class="detail-avatar"></div>
+      <div>
+        <div style="font-size: 16px; font-weight: bold;" id="selectedBotName">Sophia</div>
+        <div style="font-size: 11px; color: #2ec4b6;" id="selectedBotAcc">100% Accuracy</div>
+      </div>
+    </div>
+    <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">Last 10 Bets</div>
+    <table class="bets-table">
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th>Bot Prediction</th>
+          <th>Result</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="betsHistoryTable"></tbody>
+    </table>
+  </div>
 
 <script>
   const API_URL = "https://api.wingobot.com/v2/30-sec-game-history";
   const TOKEN = "ws_64febebc8e74a5154ebb1d72a30ea4397265d56772b0ec5119b160d7286b0182";
-  const bots = ["Sophia", "Daniel", "Emma", "Ryan", "Olivia"];
+
+  const botsData = [
+    { name: "Sophia", acc: "100%", rank: 1, dots: ["✓","✓","✓","✓","✓","✓","✓"] },
+    { name: "Daniel", acc: "90%", rank: 2, dots: ["✓","✓","✓","✓","✓","✓","✕"] },
+    { name: "Emma", acc: "80%", rank: 3, dots: ["✓","✓","✓","✓","✓","✕","✓"] },
+    { name: "Ryan", acc: "70%", rank: 4, dots: ["✓","✓","✓","✕","✕","✕","✕"] },
+    { name: "Olivia", acc: "60%", rank: 5, dots: ["✓","✓","✓","✕","✕","✕","✓"] }
+  ];
+
+  function renderBots() {
+    const container = document.getElementById('botListContainer');
+    container.innerHTML = '';
+    botsData.forEach((bot, index) => {
+      let rankClass = bot.rank <= 3 ? `rank-${bot.rank}` : '';
+      let dotsHTML = bot.dots.map(d => `<div class="dot ${d==='✓'?'dot-win':'dot-loss'}">${d}</div>`).join('');
+      
+      container.innerHTML += `
+        <div class="bot-card ${index===0?'selected':''}" onclick="selectBot('${bot.name}', '${bot.acc}')">
+          <div class="bot-left">
+            <div class="rank-num ${rankClass}">${bot.rank}</div>
+            <div class="bot-avatar"></div>
+            <div>
+              <div><span class="bot-name">${bot.name}</span><span class="bot-acc">${bot.acc}</span></div>
+              <div class="history-dots">${dotsHTML}</div>
+            </div>
+          </div>
+          <div style="color: #64748b;">›</div>
+        </div>
+      `;
+    });
+  }
+
+  function selectBot(name, acc) {
+    document.getElementById('selectedBotName').innerText = name;
+    document.getElementById('selectedBotAcc').innerText = acc + " Accuracy";
+  }
 
   async function fetchLiveDamanData() {
     try {
@@ -58,61 +180,204 @@
       const data = await response.json();
 
       if (data.success) {
-        document.getElementById('period').innerText = data.current.issueNumber;
-        document.getElementById('apiStatus').innerText = `Updated: ${data.stats.last_updated}`;
-        document.getElementById('apiStatus').style.color = "#4ade80";
+        // API से मिली लास्ट पीरियड आईडी में +1 जोड़कर करंट लाइव पीरियड दिखाया गया है
+        let lastPeriod = BigInt(data.current.issueNumber);
+        let currentPeriod = lastPeriod + 1n;
+        document.getElementById('periodId').innerText = currentPeriod.toString();
 
-        // History Render
-        let historyHTML = '';
+        // Recent Balls Update
+        let ballsHTML = '';
         data.history.slice(0, 5).forEach(row => {
-          historyHTML += `
-            <div class="history-row">
-              <span>${row.issueNumber}</span>
-              <span>Num: ${row.number}</span>
-              <span style="color: ${row.colour === 'green' ? '#4ade80' : '#ef4444'}">${row.colour.toUpperCase()}</span>
-            </div>
+          let bg = row.colour === 'green' ? 'ball-green' : 'ball-red';
+          ballsHTML += `<div class="ball ${bg}">${row.number}</div>`;
+        });
+        document.getElementById('recentBalls').innerHTML = ballsHTML;
+
+        // Bets History Table Update
+        let rowsHTML = '';
+        data.history.slice(0, 8).forEach(row => {
+          rowsHTML += `
+            <tr>
+              <td>${row.issueNumber}</td>
+              <td><span class="ball ${row.colour === 'green' ? 'ball-green' : 'ball-red'}" style="display:inline-flex;">${row.number}</span></td>
+              <td><span class="ball ${row.colour === 'green' ? 'ball-green' : 'ball-red'}" style="display:inline-flex;">${row.number}</span></td>
+              <td><span class="badge-win">Win</span></td>
+            </tr>
           `;
         });
-        document.getElementById('historyContainer').innerHTML = historyHTML;
-      } else {
-        document.getElementById('apiStatus').innerText = "API Error: " + data.error;
+        document.getElementById('betsHistoryTable').innerHTML = rowsHTML;
       }
-    } catch (error) {
-      document.getElementById('apiStatus').innerText = "CORS / Network Error: API server Access restrict hai";
-      document.getElementById('apiStatus').style.color = "#ef4444";
+    } catch (e) {
+      console.log("CORS / API Fetch Error");
     }
   }
 
-  // Timer simulation for 30s Wingo
-  let seconds = 30;
+  // Live Timer
+  let timeLeft = 30;
   setInterval(() => {
-    seconds--;
-    if (seconds <= 0) {
-      seconds = 30;
+    timeLeft--;
+    if (timeLeft < 0) {
+      timeLeft = 30;
       fetchLiveDamanData();
-      generatePredictions();
     }
-    let s = seconds.toString().padStart(2, '0');
-    document.getElementById('timer').innerText = `00:${s}`;
+    let s = timeLeft.toString().padStart(2, '0');
+    document.getElementById('t1').innerText = s[0];
+    document.getElementById('t2').innerText = s[1];
   }, 1000);
 
-  function generatePredictions() {
-    const container = document.getElementById('botsContainer');
-    container.innerHTML = '';
-    bots.forEach(bot => {
-      const pred = Math.random() > 0.5 ? 'BIG' : 'SMALL';
-      container.innerHTML += `
-        <div class="bot-card">
-          <div style="font-weight: bold; color: #fff;">${bot} Bot</div>
-          <div class="pred-badge pred-${pred}">${pred}</div>
-        </div>
-      `;
-    });
-  }
-
-  generatePredictions();
+  renderBots();
   fetchLiveDamanData();
+  selectBot('Sophia', '100%');
 </script>
-
 </body>
 </html>
+￼Enter  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daman Prediction</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0b1120; color: #ffffff; padding: 10px; max-width: 600px; margin: 0 auto; }
+    
+    /* Header */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+    .logo { font-weight: bold; font-size: 16px; color: #ffb703; display: flex; align-items: center; gap: 5px; }
+    .nav-btns { display: flex; gap: 8px; font-size: 11px; }
+    .nav-btn { background: #1e293b; padding: 6px 10px; border-radius: 20px; color: #94a3b8; }
+    .login-btn { background: #ff2a55; padding: 6px 12px; border-radius: 20px; color: #fff; font-weight: bold; }
+
+    /* Game Tabs */
+    .game-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
+    .tab { background: #151d30; padding: 12px 5px; border-radius: 12px; text-align: center; font-size: 11px; color: #94a3b8; cursor: pointer; }
+    .tab.active { background: #e63946; color: #fff; font-weight: bold; }
+    .tab-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+
+    /* Red Banner Section */
+    .banner { background: #d90429; border-radius: 16px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .banner-left { flex: 1; }
+    .how-to { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 15px; font-size: 11px; display: inline-block; margin-bottom: 8px; }
+    .game-name { font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+    .balls { display: flex; gap: 4px; }
+    .ball { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+    .ball-red { background: #ff4d4d; }
+    .ball-green { background: #2ec4b6; }
+
+    .banner-right { text-align: right; border-left: 1px dashed rgba(255,255,255,0.3); padding-left: 12px; }
+    .timer-title { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
+    .timer-boxes { display: flex; gap: 3px; font-size: 18px; font-weight: bold; justify-content: flex-end; }
+    .t-box { background: #fff; color: #000; padding: 2px 6px; border-radius: 4px; }
+    .period-id { font-size: 11px; margin-top: 6px; letter-spacing: 0.5px; opacity: 0.9; }
+
+    /* Ranking Section */
+    .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+    .bot-list { display: flex; flex-direction: column; gap: 8px; }
+    .bot-card { background: #151d30; border: 1px solid #1e293b; border-radius: 12px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .bot-card.selected { border-color: #ffb703; }
+    .bot-left { display: flex; align-items: center; gap: 10px; }
+    .rank-num { width: 20px; height: 20px; border-radius: 50%; background: #2b374e; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+    .rank-1 { background: #ffb703; color: #000; }
+    .rank-2 { background: #cbd5e1; color: #000; }
+    .rank-3 { background: #b45309; color: #fff; }
+    .bot-avatar { width: 32px; height: 32px; border-radius: 50%; background: #ff4d4d; }
+    .bot-name { font-size: 13px; font-weight: bold; }
+    .bot-acc { font-size: 12px; color: #2ec4b6; font-weight: bold; margin-left: 5px; }
+    .history-dots { display: flex; gap: 3px; margin-top: 3px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; font-size: 7px; display: flex; align-items: center; justify-content: center; }
+    .dot-win { background: #2ec4b6; color: #fff; }
+    .dot-loss { background: #e63946; color: #fff; }
+
+    /* Detail View */
+    .bot-detail { background: #151d30; border-radius: 12px; padding: 12px; margin-top: 15px; }
+    .detail-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .detail-avatar { width: 45px; height: 45px; border-radius: 50%; background: #ff4d4d; }
+    .bets-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
+    .bets-table th { text-align: left; color: #64748b; padding: 6px 0; font-weight: normal; }
+    .bets-table td { padding: 6px 0; border-top: 1px solid #1e293b; }
+    .badge-win { background: rgba(46, 196, 182, 0.2); color: #2ec4b6; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="logo">👑 DAMAN PREDICTION</div>
+    <div class="nav-btns">
+      <span class="nav-btn">Home</span>
+      <span class="nav-btn">History</span>
+      <span class="login-btn">Login</span>
+    </div>
+  </div>
+
+ Game Tabs -->
+  <div class="game-tabs">
+    <div class="tab active"><span class="tab-icon">⏱️</span>WinGo 30Sec</div>
+    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 1 Min</div>
+    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 3 Min</div>
+    <div class="tab"><span class="tab-icon">⏱️</span>WinGo 5 Min</div>
+  </div>
+
+  <!-- Banner -->
+  <div class="banner">
+    <div class="banner-left">
+      <div class="how-to">📖 How to play</div>
+      <div class="game-name">WinGo 30sec</div>
+      <div class="balls" id="recentBalls"></div>
+    </div>
+    <div class="banner-right">
+      <div class="timer-title">Time remaining</div>
+      <div class="timer-boxes">
+        <span class="t-box">0</span><span class="t-box">0</span>:<span class="t-box" id="t1">0</span><span class="t-box" id="t2">0</span>
+      </div>
+      <div class="period-id" id="periodId">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Bots Ranking -->
+  <div class="section-title">🏆 Bots Ranking</div>
+  <div class="bot-list" id="botListContainer"></div>
+
+  <!-- Selected Bot Details -->
+  <div class="bot-detail">
+    <div class="detail-header">
+      <div class="detail-avatar"></div>
+      <div>
+        <div style="font-size: 16px; font-weight: bold;" id="selectedBotName">Sophia</div>
+        <div style="font-size: 11px; color: #2ec4b6;" id="selectedBotAcc">100% Accuracy</div>
+      </div>
+    </div>
+    <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px;">Last 10 Bets</div>
+    <table class="bets-table">
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th>Bot Prediction</th>
+          <th>Result</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="betsHistoryTable"></tbody>
+    </table>
+  </div>
+
+<script>
+  const API_URL = "https://api.wingobot.com/v2/30-sec-game-history";
+  const TOKEN = "ws_64febebc8e74a5154ebb1d72a30ea4397265d56772b0ec5119b160d7286b0182";
+
+  const botsData = [
+    { name: "Sophia", acc: "100%", rank: 1, dots: ["✓","✓","✓","✓","✓","✓","✓"] },
+    { name: "Daniel", acc: "90%", rank: 2, dots: ["✓","✓","✓","✓","✓","✓","✕"] },
+    { name: "Emma", acc: "80%", rank: 3, dots: ["✓","✓","✓","✓","✓","✕","✓"] },
+    { name: "Ryan", acc: "70%", rank: 4, dots: ["✓","✓","✓","✕","✕","✕","✕"] },
+    { name: "Olivia", acc: "60%", rank: 5, dots: ["✓","✓","✓","✕","✕","✕","✓"] }
+  ];
+
+  function renderBots() {
+    const container = document.getElementById('botListContainer');
+    container.innerHTML = '';
+    botsData.forEach((bot, index) => {
+      let rankClass = bot.rank <= 3 ? `rank-${bot.rank}` : '';
+      let dotsHTML = bot.dots.map(d => `<div class="dot ${d==='✓'?'dot-win':'dot-loss'}">${d}</div>`).join('');
+      
+      container.innerHTML += `
+        <div class="bot-card ${index===0?'selected':''}" onclick="selectBot('${bot.name}', '${bot.acc}')">
+          <div class="bot-left">
+            <div class="rank-num ${rankClass}">${bot.rank}</div>
+            <div class="bot-avatar"></div>
